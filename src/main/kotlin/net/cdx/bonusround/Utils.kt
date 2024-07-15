@@ -28,9 +28,31 @@ fun sync(task: suspend () -> Unit): Job {
     }
 }
 
+fun sync(task: () -> Unit): Job {
+    return Main.instance.launch {
+        task()
+    }
+}
+
 fun async(task: suspend () -> Unit): Job {
     return Main.instance.launch {
         withContext(Dispatchers.IO) {
+            task()
+        }
+    }
+}
+
+fun delay(delayTime: Long, task: () -> Unit): Job {
+    return Main.instance.launch {
+        kotlinx.coroutines.delay(delayTime)
+        task()
+    }
+}
+
+fun delayAsync(delayTime: Long, task: () -> Unit): Job {
+    return Main.instance.launch {
+        withContext(Dispatchers.IO) {
+            kotlinx.coroutines.delay(delayTime)
             task()
         }
     }
