@@ -17,9 +17,18 @@ class Queue(val id: String, val formattedName: String, val meta: QueueMeta, priv
 
     init {
         if (matchmaker == null) {
-//            matchmaker = Function { players ->
-//                
-//            } // TODO
+            matchmaker = Function { players ->
+                val games = ArrayList<Game>()
+                var lastPlayer: Player? = null
+                players.forEach { player ->
+                    if (lastPlayer == null) {
+                        lastPlayer = player
+                    } else {
+                        games.add(Game(arrayListOf(lastPlayer!!, player)))
+                    }
+                }
+                return@Function games
+            }
         }
         
         EventListener(PlayerQuitEvent::class.java) { event ->
