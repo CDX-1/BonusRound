@@ -4,24 +4,82 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import me.clip.placeholderapi.PlaceholderAPI
+import net.cdx.bonusround.config.lang
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.bukkit.entity.Player
 import java.util.concurrent.TimeUnit
 
-private val miniMessage = MiniMessage.miniMessage()
-fun format(text: String, usePrefix: Boolean = true, vararg placeholders: String): Component {
-    var message = text
-    var count = 0
-    placeholders.forEach {
-        count++
-        message = message.replace("%$count", it)
+// FORMATTING
+
+private val miniMessageSerializer = MiniMessage.miniMessage()
+private val legacySerializer = LegacyComponentSerializer.legacyAmpersand()
+private val gsonSerializer = GsonComponentSerializer.gson()
+
+@Suppress("MemberVisibilityCanBePrivate")
+class Formatter(private var message: String) {
+
+    private var usePrefix = true
+    private var usePAPI = true
+    private var papiPlayer: Player? = null
+    private val placeholders = ArrayList<String>()
+
+    fun usePrefix(value: Boolean): Formatter {
+        usePrefix = value
+        return this
     }
-    return if (usePrefix) {
-        miniMessage.deserialize("${Lang.General.prefix} $message")
-    } else {
-        miniMessage.deserialize(message)
+
+    fun usePAPI(value: Boolean, player: Player): Formatter {
+        usePAPI = value
+        papiPlayer = player
+        return this
     }
+
+    fun placeholders(vararg values: String): Formatter {
+        placeholders.addAll(values)
+        return this
+    }
+
+
+
+    fun raw(): String {
+        val processedText = placeholders.foldIndexed(
+            if (usePAPI && papiPlayer != null) {
+                PlaceholderAPI.setPlaceholders(papiPlayer, message)
+            } else {
+                message
+            }
+        ) { index, acc, placeholder ->
+            acc.replace("%$index", placeholder)
+        }
+
+        val finalText = if (usePrefix) {
+            "${lang().general.prefix} $processedText"
+        } else {
+            processedText
+        }
+
+        return finalText
+    }
+
+    fun component(): Component {
+        return miniMessageSerializer.deserialize(raw())
+    }
+
+    fun legacy(): String {
+        return legacySerializer.serialize(component())
+    }
+
+    fun gson(): String {
+        return gsonSerializer.serialize(component())
+    }
+
 }
+
+// TIME CONVERSIONS
 
 fun millis(): TimeUnit {
     return TimeUnit.MILLISECONDS
@@ -42,6 +100,8 @@ fun hours(): TimeUnit {
 fun days(): TimeUnit {
     return TimeUnit.DAYS
 }
+
+// QUICK TASKS
 
 fun sync(task: () -> Unit): Job {
     return Main.instance.launch {

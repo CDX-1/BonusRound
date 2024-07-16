@@ -5,6 +5,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.7.1"
     id("xyz.jpenilla.run-paper") version "2.3.0"
     kotlin("jvm") version "1.9.20"
+    kotlin("plugin.serialization") version "1.9.20"
 }
 
 group = "net.cdx"
@@ -29,6 +30,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.18.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.18.0")
+    implementation("org.spongepowered:configurate-hocon:4.1.2")
+    implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
 }
 
 tasks.withType<ShadowJar> {

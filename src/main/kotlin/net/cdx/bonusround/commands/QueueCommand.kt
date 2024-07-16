@@ -3,8 +3,8 @@ package net.cdx.bonusround.commands
 import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import net.cdx.bonusround.Command
-import net.cdx.bonusround.Lang
-import net.cdx.bonusround.format
+import net.cdx.bonusround.Formatter
+import net.cdx.bonusround.config.lang
 import net.cdx.bonusround.games.api.QueueManager
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -21,8 +21,8 @@ class QueueCommand : Command(
     ),
     aliases = arrayOf("q", "match", "matchmaking", "mm"),
 ) {
-    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
-        player.sendMessage(format(Lang.Commands.Queue.noSubCommand))
+    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
+        player.sendMessage(Formatter(lang().commands.queue.noSubCommands).component())
         player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
     }
 }
@@ -37,7 +37,7 @@ class QueueDodgeballSubCommand : Command(
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
         if (QueueManager isInQueue player) {
-            player.sendMessage(format(Lang.Commands.Queue.mustLeaveQueue))
+            player.sendMessage(Formatter(lang().commands.queue.mustLeaveQueue).component())
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
             return@BiConsumer
         }
@@ -52,7 +52,9 @@ class QueueDodgeballSubCommand : Command(
         val queue = QueueManager getQueue "dodgeball_1v1"
         queue!!.addPlayer(player)
 
-        player.sendMessage(format(Lang.Commands.Queue.joinedQueue, true, "Dodgeball $formatId"))
+        player.sendMessage(Formatter(lang().commands.queue.joinedQueue)
+            .placeholders("Dodgeball $formatId")
+            .component())
         player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))
     }
 }
@@ -62,16 +64,16 @@ class QueueLeaveSubCommand : Command(
     shortDescription = "Leave your current queue",
     fullDescription = "Remove yourself from the matchmaking of your current queue"
 ) {
-    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
+    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
         if (!(QueueManager isInQueue player)) {
-            player.sendMessage(format(Lang.Commands.Queue.notInQueue))
+            player.sendMessage(Formatter(lang().commands.queue.notInQueue).component())
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
             return@BiConsumer
         }
         val queue = QueueManager getQueueOf player
         if (queue != null) {
             queue removePlayer player
-            player.sendMessage(format(Lang.Commands.Queue.leftQueue))
+            player.sendMessage(Formatter(lang().commands.queue.leftQueue).component())
             player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 2f, 1f))
         }
     }
