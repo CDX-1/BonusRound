@@ -1,19 +1,22 @@
 package net.cdx.bonusround
 
-import com.comphenix.protocol.ProtocolLibrary
-import com.comphenix.protocol.ProtocolManager
+import com.github.retrooper.packetevents.PacketEvents
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
+import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.CommandAPIHandler
+import dev.jorel.commandapi.executors.CommandExecutor
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.cdx.bonusround.commands.QueueCommand
 import net.cdx.bonusround.config.ConfigLoader
 import net.cdx.bonusround.config.Lang
+import net.cdx.bonusround.config.Overrides
 import net.cdx.bonusround.games.Dodgeball
 import net.cdx.bonusround.games.api.QueueManager
 import net.cdx.bonusround.generic.AppearanceEvents
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerCommandSendEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.function.Function
 import java.util.logging.Logger
@@ -23,55 +26,73 @@ class Main : JavaPlugin() {
     companion object {
         lateinit var instance: Main
         lateinit var logger: Logger
-        lateinit var protocolManager: ProtocolManager
 
         lateinit var lang: Lang
+        lateinit var overrides: Overrides
 
         val placeholderResolvers: HashMap<String, Function<Player, String>> = HashMap()
-        val openCommandAliases = ArrayList<String>()
     }
 
     private lateinit var langLoader: ConfigLoader<Lang>
+    private lateinit var overridesLoader: ConfigLoader<Overrides>
+
+    override fun onLoad() {
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
+        PacketEvents.getAPI().settings.reEncodeByDefault(false)
+            .checkForUpdates(true)
+        PacketEvents.getAPI().load()
+    }
 
     override fun onEnable() {
+
+        // INIT
+
         instance = this
         Companion.logger = logger
-        protocolManager = ProtocolLibrary.getProtocolManager()
+
+        // PACKET EVENTS
+
+        PacketEvents.getAPI().init()
+
+        // LANG
 
         langLoader = ConfigLoader("lang.conf", Lang::class)
         lang = langLoader.load()
+        overridesLoader = ConfigLoader("overrides.conf", Overrides::class)
+        overrides = overridesLoader.load()
+
+        // LISTENERS
 
         AppearanceEvents().register()
 
+        // GAMES
+
         Dodgeball().register()
+
+        // COMMANDS
 
         CommandAPI.onLoad(CommandAPIBukkitConfig(this))
         CommandAPI.onEnable()
 
         QueueCommand().register()
 
-        var commandsToRemove: Set<String> = setOf()
-        EventListener(PlayerCommandSendEvent::class.java) { event ->
-            if (!event.player.isOp) {
-                if (commandsToRemove.isEmpty()) {
-                    event.commands.forEach { command ->
-                        if (openCommandAliases.contains(command)) {
-                            return@forEach
-                        }
-                        commandsToRemove = commandsToRemove.plus(command)
-                    }
-                }
-                event.commands.removeAll(commandsToRemove)
-            }
-        }
+        // PLACEHOLDER API
 
         registerPlaceholders()
         PAPIExtension().register()
+
+        // OVERRIDES
+
+        overrides.commandPermissionOverrides.forEach { commandPermissionOverride ->
+            val command = server.commandMap.getCommand(commandPermissionOverride)
+            command?.permission = "override"
+        }
     }
 
     override fun onDisable() {
         CommandAPI.onDisable()
         langLoader.save()
+        overridesLoader.save()
     }
 
     private val miniMessage = MiniMessage.miniMessage()

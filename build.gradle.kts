@@ -18,24 +18,37 @@ repositories {
     maven("https://repo.codemc.org/repository/maven-public/")
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.codemc.io/repository/maven-releases/")
 }
 
 dependencies {
+
+    // PAPER
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
+
+    // KOTLIN
+
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.0")
-    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
-    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.0")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+
+    // DEPENDENCIES & LIBRARIES
+
     compileOnly("me.clip:placeholderapi:2.11.6")
+
+    implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.18.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.18.0")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
+    implementation("com.github.retrooper:packetevents-spigot:2.4.0")
 }
 
 tasks.withType<ShadowJar> {
     relocate("dev.jorel.commandapi", "net.cdx.bonusround.commandapi")
+    relocate("com.github.retrooper.packetevents", "net.cdx.bonusround.packets.api")
+    relocate("io.github.retrooper.packetevents", "net.cdx.bonusround.packets.impl")
+    minimize()
 }
 
 tasks.assemble {

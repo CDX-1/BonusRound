@@ -1,14 +1,11 @@
 package net.cdx.bonusround.generic
 
-import net.cdx.bonusround.EventListener
-import net.cdx.bonusround.Formatter
-import net.cdx.bonusround.Registrable
+import net.cdx.bonusround.*
 import net.cdx.bonusround.config.lang
+import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.event.entity.FoodLevelChangeEvent
-import org.bukkit.event.player.PlayerChangedWorldEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 
 class AppearanceEvents : Registrable {
 
@@ -48,6 +45,53 @@ class AppearanceEvents : Registrable {
 
         EventListener(FoodLevelChangeEvent::class.java) { event ->
             if (event.entity.world.name == "world") event.isCancelled = true
+        }
+
+        // SIMPLER COMMANDS
+
+        EventListener(PlayerCommandSendEvent::class.java) { event ->
+            if (event.player.isOp) return@EventListener
+            event.commands.removeIf { commandName ->
+                if (BonusRoundCommandList.contains(commandName)) return@removeIf false
+                val command = Bukkit.getServer().commandMap.getCommand(commandName) ?: return@removeIf false
+                if (command.permission == null) {
+                    true
+                } else {
+                    !event.player.hasPermission(command.permission!!)
+                }
+            }
+        }
+
+        EventListener(PlayerCommandPreprocessEvent::class.java) { event ->
+            val command = Bukkit.getServer().commandMap.getCommand(event.message.split(" ").first.removePrefix("/"))
+            if (command == null) {
+                event.isCancelled = true
+                event.player.sendMessage(
+                    Formatter(lang().general.unknownCommand).component()
+                )
+                return@EventListener
+            }
+            if (BonusRoundCommandList.contains(command.name)) {
+                if (command.permission == null) {
+                    return@EventListener
+                }
+                if (!event.player.hasPermission(BonusRoundCommandList[command.name]!!.permission!!)) {
+                    event.isCancelled = true
+                    event.player.sendMessage(
+                        Formatter(lang().general.unknownCommand).component()
+                    )
+                }
+            } else {
+                if (command.permission == null) {
+                    return@EventListener
+                }
+                if (!event.player.hasPermission(command.permission!!)) {
+                    event.isCancelled = true
+                    event.player.sendMessage(
+                        Formatter(lang().general.unknownCommand).component()
+                    )
+                }
+            }
         }
 
     }

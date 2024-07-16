@@ -19,6 +19,7 @@ class QueueCommand : Command(
         QueueDodgeballSubCommand(),
         QueueLeaveSubCommand()
     ),
+    permission = "commands.default.queue",
     aliases = arrayOf("q", "match", "matchmaking", "mm"),
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
@@ -33,7 +34,8 @@ class QueueDodgeballSubCommand : Command(
     fullDescription = "Join the dodgeball matchmaking queue in the format of your choice",
     arguments = mutableListOf(
         MultiLiteralArgument("format", "1v1", "2v2")
-    )
+    ),
+    permission = "commands.default.queue"
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
         if (QueueManager isInQueue player) {
@@ -62,7 +64,8 @@ class QueueDodgeballSubCommand : Command(
 class QueueLeaveSubCommand : Command(
     "leave",
     shortDescription = "Leave your current queue",
-    fullDescription = "Remove yourself from the matchmaking of your current queue"
+    fullDescription = "Remove yourself from the matchmaking of your current queue",
+    permission = "commands.default.queue"
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
         if (!(QueueManager isInQueue player)) {

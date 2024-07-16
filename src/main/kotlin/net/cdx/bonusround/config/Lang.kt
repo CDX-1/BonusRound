@@ -20,6 +20,7 @@ class Lang {
         var joinUnique: String = "<dark_gray>[<reset><green>+</green><dark_gray>]<reset> <gray>%player_name%<reset> <yellow>(#%server_unique_joins%)</yellow>"
         var join: String = "<dark_gray>[<reset><green>+</green><dark_gray>]<reset> <gray>%player_name%"
         var quit: String = "<dark_gray>[<reset><red>-</red><dark_gray>]<reset> <gray>%player_name%"
+        var unknownCommand: String = "That command doesn't seem to exist! Try <color:#DB2B39><click:run_command:/help>/help!"
 
     }
 
