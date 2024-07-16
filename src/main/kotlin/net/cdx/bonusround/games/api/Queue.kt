@@ -3,6 +3,7 @@ package net.cdx.bonusround.games.api
 import net.cdx.bonusround.EventListener
 import net.cdx.bonusround.Main
 import net.cdx.bonusround.async
+import net.cdx.bonusround.sync
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.function.Consumer
@@ -68,7 +69,10 @@ class Queue(val id: String, val formattedName: String, val meta: QueueMeta, priv
                 QueueManager.setGame(player, game)
             }
             async {
-                startGame.accept(game)
+                game.job = sync {
+                    game.broadcast("Match found!")
+                    startGame.accept(game)
+                }
             }
         }
     }

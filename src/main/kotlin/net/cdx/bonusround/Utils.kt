@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import java.util.concurrent.TimeUnit
 
 private val miniMessage = MiniMessage.miniMessage()
 fun format(text: String, usePrefix: Boolean = true, vararg placeholders: String): Component {
@@ -22,10 +23,24 @@ fun format(text: String, usePrefix: Boolean = true, vararg placeholders: String)
     }
 }
 
-fun sync(task: suspend () -> Unit): Job {
-    return Main.instance.launch {
-        task()
-    }
+fun millis(): TimeUnit {
+    return TimeUnit.MILLISECONDS
+}
+
+fun seconds(): TimeUnit {
+    return TimeUnit.SECONDS
+}
+
+fun minutes(): TimeUnit {
+    return TimeUnit.MINUTES
+}
+
+fun hours(): TimeUnit {
+    return TimeUnit.HOURS
+}
+
+fun days(): TimeUnit {
+    return TimeUnit.DAYS
 }
 
 fun sync(task: () -> Unit): Job {
@@ -34,7 +49,21 @@ fun sync(task: () -> Unit): Job {
     }
 }
 
-fun async(task: suspend () -> Unit): Job {
+fun suspendingSync(task: suspend () -> Unit): Job {
+    return Main.instance.launch {
+        task()
+    }
+}
+
+fun async(task: () -> Unit): Job {
+    return Main.instance.launch {
+        withContext(Dispatchers.IO) {
+            task()
+        }
+    }
+}
+
+fun suspendingAsync(task: suspend () -> Unit): Job {
     return Main.instance.launch {
         withContext(Dispatchers.IO) {
             task()

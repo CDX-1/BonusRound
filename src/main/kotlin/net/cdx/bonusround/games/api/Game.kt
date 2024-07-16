@@ -1,12 +1,17 @@
 package net.cdx.bonusround.games.api
 
+import kotlinx.coroutines.Job
 import net.cdx.bonusround.EventListener
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.function.Consumer
 
 class Game(val players: ArrayList<Player>) {
 
+    lateinit var job: Job
     private val onPlayerLostHandlers = ArrayList<Consumer<Player>>()
 
     fun onPlayerLost(handler: Consumer<Player>) {
@@ -23,13 +28,27 @@ class Game(val players: ArrayList<Player>) {
         }
     }
 
-    fun release(player: Player? = null) {
+    fun broadcast(message: String) {
+        players.forEach { it.sendMessage(message) }
+    }
+
+    fun broadcast(message: Component) {
+        players.forEach { it.sendMessage(message) }
+    }
+
+    fun release(player: Player? = null, cancelJob: Boolean = false, returnToLobby: Boolean = true) {
+        val lobby = Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5)
         if (player != null) {
             QueueManager releasePlayer player
+            if (returnToLobby) player.teleport(lobby)
         } else {
             players.forEach { pl ->
                 QueueManager releasePlayer pl
+               if (returnToLobby) pl.teleport(lobby)
             }
+        }
+        if (cancelJob) {
+            job.cancel()
         }
     }
 
