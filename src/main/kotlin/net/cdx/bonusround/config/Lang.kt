@@ -42,6 +42,15 @@ class Lang {
 
         }
 
+        var discord = Discord()
+
+        @ConfigSerializable
+        class Discord {
+
+            var serverInvite: String = "<click:open_url:https://discord.gg/naQRPHEYP7>Click here to join our official Discord server!"
+
+        }
+
     }
 
     var games = Games()

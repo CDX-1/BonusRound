@@ -29,7 +29,7 @@ dependencies {
     // KOTLIN
 
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
 
     // DEPENDENCIES & LIBRARIES
 
@@ -42,12 +42,14 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
     implementation("com.github.retrooper:packetevents-spigot:2.4.0")
+    implementation("com.github.stefvanschie.inventoryframework:IF:0.10.15")
 }
 
 tasks.withType<ShadowJar> {
     relocate("dev.jorel.commandapi", "net.cdx.bonusround.commandapi")
     relocate("com.github.retrooper.packetevents", "net.cdx.bonusround.packets.api")
     relocate("io.github.retrooper.packetevents", "net.cdx.bonusround.packets.impl")
+    relocate("com.github.stefvanschie.inventoryframework", "net.cdx.bonusround.gui.api")
     minimize()
 }
 

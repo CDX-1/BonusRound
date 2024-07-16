@@ -1,12 +1,13 @@
 package net.cdx.bonusround
 
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.shynixn.mccoroutine.bukkit.MCCoroutine
+import com.github.shynixn.mccoroutine.bukkit.impl.MCCoroutineImpl
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
-import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.CommandAPIHandler
-import dev.jorel.commandapi.executors.CommandExecutor
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
+import net.cdx.bonusround.commands.DiscordCommand
+import net.cdx.bonusround.commands.HelpCommand
 import net.cdx.bonusround.commands.QueueCommand
 import net.cdx.bonusround.config.ConfigLoader
 import net.cdx.bonusround.config.Lang
@@ -14,6 +15,7 @@ import net.cdx.bonusround.config.Overrides
 import net.cdx.bonusround.games.Dodgeball
 import net.cdx.bonusround.games.api.QueueManager
 import net.cdx.bonusround.generic.AppearanceEvents
+import net.cdx.bonusround.gui.GuiRegistry
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
@@ -26,6 +28,7 @@ class Main : JavaPlugin() {
     companion object {
         lateinit var instance: Main
         lateinit var logger: Logger
+        lateinit var guiRegistry: GuiRegistry
 
         lateinit var lang: Lang
         lateinit var overrides: Overrides
@@ -49,6 +52,7 @@ class Main : JavaPlugin() {
 
         instance = this
         Companion.logger = logger
+        guiRegistry = GuiRegistry()
 
         // PACKET EVENTS
 
@@ -75,6 +79,8 @@ class Main : JavaPlugin() {
         CommandAPI.onEnable()
 
         QueueCommand().register()
+        DiscordCommand().register()
+        HelpCommand().register()
 
         // PLACEHOLDER API
 
@@ -87,6 +93,10 @@ class Main : JavaPlugin() {
             val command = server.commandMap.getCommand(commandPermissionOverride)
             command?.permission = "override"
         }
+
+        // removing this breaks mccoroutine, no idea why
+        println(MCCoroutine::class.java.classLoader)
+        println(MCCoroutineImpl::class.java.classLoader)
     }
 
     override fun onDisable() {

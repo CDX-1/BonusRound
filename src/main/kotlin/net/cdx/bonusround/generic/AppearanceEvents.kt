@@ -63,7 +63,15 @@ class AppearanceEvents : Registrable {
         }
 
         EventListener(PlayerCommandPreprocessEvent::class.java) { event ->
-            val command = Bukkit.getServer().commandMap.getCommand(event.message.split(" ").first.removePrefix("/"))
+            val commandName = event.message.split(" ").first().removePrefix("/")
+            if (commandName.contains(":")) {
+                event.isCancelled = true
+                event.player.sendMessage(
+                    Formatter(lang().general.unknownCommand).component()
+                )
+                return@EventListener
+            }
+            val command = Bukkit.getServer().commandMap.getCommand(commandName)
             if (command == null) {
                 event.isCancelled = true
                 event.player.sendMessage(
@@ -72,9 +80,6 @@ class AppearanceEvents : Registrable {
                 return@EventListener
             }
             if (BonusRoundCommandList.contains(command.name)) {
-                if (command.permission == null) {
-                    return@EventListener
-                }
                 if (!event.player.hasPermission(BonusRoundCommandList[command.name]!!.permission!!)) {
                     event.isCancelled = true
                     event.player.sendMessage(
