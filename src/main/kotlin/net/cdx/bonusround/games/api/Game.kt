@@ -13,9 +13,20 @@ class Game(val players: ArrayList<Player>) {
 
     lateinit var job: Job
     private val onPlayerLostHandlers = ArrayList<Consumer<Player>>()
+    private val onEventHandlers = ArrayList<Consumer<HashMap<String, Any>>>()
 
     fun onPlayerLost(handler: Consumer<Player>) {
         onPlayerLostHandlers.add(handler)
+    }
+
+    fun onEvent(handler: Consumer<HashMap<String, Any>>) {
+        onEventHandlers.add(handler)
+    }
+
+    fun callEvent(parameters: HashMap<String, Any>) {
+        onEventHandlers.forEach { handler ->
+            handler.accept(parameters)
+        }
     }
 
     init {

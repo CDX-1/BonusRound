@@ -19,6 +19,7 @@ repositories {
     maven("https://repo.dmulloy2.net/repository/public/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.codemc.io/repository/maven-releases/")
+    maven("https://repo.codemc.io/repository/maven-public/")
 }
 
 dependencies {
@@ -43,6 +44,7 @@ dependencies {
     implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
     implementation("com.github.retrooper:packetevents-spigot:2.4.0")
     implementation("com.github.stefvanschie.inventoryframework:IF:0.10.15")
+    implementation("de.tr7zw:item-nbt-api:2.13.1")
 }
 
 tasks.withType<ShadowJar> {
@@ -50,7 +52,8 @@ tasks.withType<ShadowJar> {
     relocate("com.github.retrooper.packetevents", "net.cdx.bonusround.packets.api")
     relocate("io.github.retrooper.packetevents", "net.cdx.bonusround.packets.impl")
     relocate("com.github.stefvanschie.inventoryframework", "net.cdx.bonusround.gui.api")
-    minimize()
+    relocate("de.tr7zw.changeme.nbtapi", "net.cdx.bonusround.nbt.api")
+    // minimize()
 }
 
 tasks.assemble {

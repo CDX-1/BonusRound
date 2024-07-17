@@ -2,8 +2,8 @@ package net.cdx.bonusround.commands
 
 import dev.jorel.commandapi.executors.CommandArguments
 import net.cdx.bonusround.Command
-import net.cdx.bonusround.Formatter
 import net.cdx.bonusround.config.lang
+import net.cdx.bonusround.utils.Formatter
 import org.apache.logging.log4j.util.BiConsumer
 import org.bukkit.entity.Player
 

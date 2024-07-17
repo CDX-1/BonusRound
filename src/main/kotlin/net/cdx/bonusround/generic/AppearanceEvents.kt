@@ -1,8 +1,13 @@
 package net.cdx.bonusround.generic
 
-import net.cdx.bonusround.*
+import net.cdx.bonusround.BonusRoundCommandList
+import net.cdx.bonusround.EventListener
+import net.cdx.bonusround.Registrable
 import net.cdx.bonusround.config.lang
+import net.cdx.bonusround.utils.Formatter
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.attribute.Attribute
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.player.*
@@ -15,12 +20,14 @@ class AppearanceEvents : Registrable {
 
         EventListener(PlayerJoinEvent::class.java) { event ->
             if (event.player.hasPlayedBefore()) {
-                event.joinMessage(Formatter(lang().general.join)
+                event.joinMessage(
+                    Formatter(lang().general.join)
                     .usePrefix(false)
                     .usePAPI(true, event.player)
                     .component())
             } else {
-                event.joinMessage(Formatter(lang().general.joinUnique)
+                event.joinMessage(
+                    Formatter(lang().general.joinUnique)
                     .usePrefix(false)
                     .usePAPI(true, event.player)
                     .component())
@@ -28,7 +35,8 @@ class AppearanceEvents : Registrable {
         }
 
         EventListener(PlayerQuitEvent::class.java) { event ->
-            event.quitMessage(Formatter(lang().general.quit)
+            event.quitMessage(
+                Formatter(lang().general.quit)
                 .usePrefix(false)
                 .usePAPI(true, event.player)
                 .component())
@@ -97,6 +105,12 @@ class AppearanceEvents : Registrable {
                     )
                 }
             }
+        }
+
+        EventListener(PlayerJoinEvent::class.java) { event ->
+            event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
+            event.player.gameMode = GameMode.ADVENTURE
+            event.player.inventory.clear()
         }
 
     }

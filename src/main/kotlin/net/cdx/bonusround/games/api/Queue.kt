@@ -2,8 +2,8 @@ package net.cdx.bonusround.games.api
 
 import net.cdx.bonusround.EventListener
 import net.cdx.bonusround.Main
-import net.cdx.bonusround.async
-import net.cdx.bonusround.sync
+import net.cdx.bonusround.utils.async
+import net.cdx.bonusround.utils.sync
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.function.Consumer

@@ -3,9 +3,9 @@ package net.cdx.bonusround.commands
 import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import net.cdx.bonusround.Command
-import net.cdx.bonusround.Formatter
 import net.cdx.bonusround.config.lang
 import net.cdx.bonusround.games.api.QueueManager
+import net.cdx.bonusround.utils.Formatter
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.apache.logging.log4j.util.BiConsumer
@@ -54,7 +54,8 @@ class QueueDodgeballSubCommand : Command(
         val queue = QueueManager getQueue "dodgeball_1v1"
         queue!!.addPlayer(player)
 
-        player.sendMessage(Formatter(lang().commands.queue.joinedQueue)
+        player.sendMessage(
+            Formatter(lang().commands.queue.joinedQueue)
             .placeholders("Dodgeball $formatId")
             .component())
         player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))

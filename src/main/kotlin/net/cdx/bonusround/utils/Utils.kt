@@ -1,10 +1,11 @@
-package net.cdx.bonusround
+package net.cdx.bonusround.utils
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import me.clip.placeholderapi.PlaceholderAPI
+import net.cdx.bonusround.Main
 import net.cdx.bonusround.config.lang
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage

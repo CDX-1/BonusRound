@@ -21,6 +21,7 @@ class Lang {
         var join: String = "<dark_gray>[<reset><green>+</green><dark_gray>]<reset> <gray>%player_name%"
         var quit: String = "<dark_gray>[<reset><red>-</red><dark_gray>]<reset> <gray>%player_name%"
         var unknownCommand: String = "That command doesn't seem to exist! Try <color:#DB2B39><click:run_command:/help>/help!"
+        var undroppableItem: String = "You cannot drop this item!"
 
     }
 
@@ -68,6 +69,15 @@ class Lang {
             var arenaFound: String = "Found arena: <color:#DB2B39>%0"
             var arenaSearchTimeout: String = "You've been removed from the arena queue because your search took longer than %0 minutes"
             var arenaInstanceTimeout: String = "Your arena has timed out, this is likely a bug"
+
+        }
+
+        var dodgeball = Dodgeball()
+
+        @ConfigSerializable
+        class Dodgeball {
+
+            var dodgeballItemName: String = "<color:#DB2B39>Dodgeball"
 
         }
 
