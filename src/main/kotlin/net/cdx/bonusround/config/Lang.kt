@@ -22,6 +22,7 @@ class Lang {
         var quit: String = "<dark_gray>[<reset><red>-</red><dark_gray>]<reset> <gray>%player_name%"
         var unknownCommand: String = "That command doesn't seem to exist! Try <color:#DB2B39><click:run_command:/help>/help!"
         var undroppableItem: String = "You cannot drop this item!"
+        var chatFormat: String = "%0 %player_name% <reset><dark_gray>»<reset> <gray>"
 
     }
 

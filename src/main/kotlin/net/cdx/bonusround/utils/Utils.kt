@@ -23,6 +23,20 @@ private val gsonSerializer = GsonComponentSerializer.gson()
 @Suppress("MemberVisibilityCanBePrivate")
 class Formatter(private var message: String) {
 
+    companion object {
+        fun minimessage(): MiniMessage {
+            return miniMessageSerializer
+        }
+
+        fun legacy(): LegacyComponentSerializer {
+            return legacySerializer
+        }
+
+        fun gson(): GsonComponentSerializer {
+            return gsonSerializer
+        }
+    }
+
     private var usePrefix = true
     private var usePAPI = true
     private var papiPlayer: Player? = null

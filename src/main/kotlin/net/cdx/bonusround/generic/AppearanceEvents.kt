@@ -1,5 +1,6 @@
 package net.cdx.bonusround.generic
 
+import io.papermc.paper.event.player.AsyncChatEvent
 import net.cdx.bonusround.BonusRoundCommandList
 import net.cdx.bonusround.EventListener
 import net.cdx.bonusround.Registrable
@@ -55,7 +56,18 @@ class AppearanceEvents : Registrable {
             if (event.entity.world.name == "world") event.isCancelled = true
         }
 
+        EventListener(PlayerMoveEvent::class.java) { event ->
+            if (event.player.world.name != "world") return@EventListener
+            if (50 < event.player.location.y) return@EventListener
+            event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
+        }
+
         // SIMPLER COMMANDS
+
+        val renderer = MessageRenderer()
+        EventListener(AsyncChatEvent::class.java) { event ->
+            event.renderer(renderer)
+        }
 
         EventListener(PlayerCommandSendEvent::class.java) { event ->
             if (event.player.isOp) return@EventListener
