@@ -1,6 +1,7 @@
 package net.cdx.bonusround.games
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import de.tr7zw.changeme.nbtapi.NBT
 import io.papermc.paper.event.entity.EntityMoveEvent
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,7 @@ import org.bukkit.event.player.PlayerToggleFlightEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
+import java.util.UUID
 import java.util.function.Consumer
 
 private lateinit var dodgeballArenaProvider: ArenaProvider
@@ -128,6 +130,9 @@ class Dodgeball : Registrable {
             val force = event.force
             val item = ItemStack(Material.PLAYER_HEAD)
             val stand = player.world.spawnEntity(player.eyeLocation.subtract(Vector(0, 3, 0)), EntityType.ARMOR_STAND) as ArmorStand
+            NBT.modify(stand) { nbt ->
+                nbt.setUUID("owner", player.uniqueId)
+            }
             stand.isVisible = false
             stand.isSmall = true
             stand.setBasePlate(false)
@@ -147,19 +152,23 @@ class Dodgeball : Registrable {
             if (event.entityType != EntityType.ARMOR_STAND) return@EventListener
             val entity = event.entity as ArmorStand
             if (entity.world.name != "arenas") return@EventListener
-            val nearby = entity.location.getNearbyPlayers(1.0)
-            nearby.forEach { player ->
-                if (!inGame.containsKey(player)) return@forEach
-                delay(500) {
-                    inGame[player]?.callEvent(hashMapOf(Pair("playerHit", player)))
+            NBT.get(entity) { nbt ->
+                val uuid = nbt.getUUID("owner") ?: return@get
+                val nearby = entity.location.getNearbyPlayers(1.0)
+                nearby.forEach { player ->
+                    if (player.uniqueId == uuid) return@forEach
+                    if (!inGame.containsKey(player)) return@forEach
+                    delay(500) {
+                        inGame[player]?.callEvent(hashMapOf(Pair("playerHit", player)))
+                    }
                 }
-            }
-            val belowBlockType = event.entity.world.getBlockAt(event.entity.location.subtract(Vector(0.toDouble(), 0.25, 0.toDouble()))).type
-            if (belowBlockType == Material.AIR || belowBlockType == Material.BARRIER || belowBlockType == Material.LIGHT) return@EventListener
-            event.entity.world.spawnParticle(Particle.EXPLOSION, event.entity.location, 3)
-            event.entity.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
-            delay(seconds().toMillis(2)) {
-                event.entity.remove()
+                val belowBlockType = event.entity.world.getBlockAt(event.entity.location.subtract(Vector(0.toDouble(), 0.25, 0.toDouble()))).type
+                if (belowBlockType == Material.AIR || belowBlockType == Material.BARRIER || belowBlockType == Material.LIGHT) return@get
+                event.entity.world.spawnParticle(Particle.EXPLOSION, event.entity.location, 3)
+                event.entity.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
+                delay(seconds().toMillis(2)) {
+                    event.entity.remove()
+                }
             }
         }
 
