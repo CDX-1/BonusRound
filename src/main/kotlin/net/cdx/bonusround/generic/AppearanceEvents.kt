@@ -6,6 +6,8 @@ import net.cdx.bonusround.EventListener
 import net.cdx.bonusround.Registrable
 import net.cdx.bonusround.config.lang
 import net.cdx.bonusround.utils.Formatter
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -123,6 +125,7 @@ class AppearanceEvents : Registrable {
             event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
             event.player.gameMode = GameMode.ADVENTURE
             event.player.inventory.clear()
+            event.player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 2f, 1f))
         }
 
     }
