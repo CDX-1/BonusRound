@@ -17,6 +17,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitScheduler
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 // FORMATTING
 
@@ -196,6 +197,10 @@ fun delayAsync(delayTime: Long, task: () -> Unit): Job {
             task()
         }
     }
+}
+
+fun doChance(chance: Double, task: () -> Unit) {
+    if(Random.nextDouble() < chance / 100) task()
 }
 
 // SCHEDULER
