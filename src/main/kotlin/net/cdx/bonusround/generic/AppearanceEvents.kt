@@ -12,8 +12,10 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.attribute.Attribute
+import org.bukkit.entity.Player
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.player.*
+import org.bukkit.scoreboard.Team
 
 class AppearanceEvents : Registrable {
 
@@ -21,26 +23,41 @@ class AppearanceEvents : Registrable {
 
         // CHAT EVENTS
 
+        val scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+        val noCollisionTeam = scoreboard.getTeam("noCollisions") ?: scoreboard.registerNewTeam("noCollisions")
+        noCollisionTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER)
+
+        fun Player.setCollisions(value: Boolean) {
+            if (!value) {
+                noCollisionTeam.addPlayer(this)
+            } else {
+                noCollisionTeam.removePlayer(this)
+            }
+        }
+
         EventListener(PlayerJoinEvent::class.java) { event ->
-            if (event.player.hasPlayedBefore()) {
+            val player = event.player
+
+            if (player.hasPlayedBefore()) {
                 event.joinMessage(
                     Formatter(lang().general.join)
                     .usePrefix(false)
-                    .usePAPI(true, event.player)
+                    .usePAPI(true, player)
                     .component())
             } else {
                 event.joinMessage(
                     Formatter(lang().general.joinUnique)
                     .usePrefix(false)
-                    .usePAPI(true, event.player)
+                    .usePAPI(true, player)
                     .component())
             }
 
-            event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
-            event.player.gameMode = GameMode.ADVENTURE
-            event.player.inventory.clear()
-            event.player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
-            event.player.playSound(Sound.sound(Key.key("entity.firework_rocket.twinkle"), Sound.Source.MASTER, 2f, 1f))
+            player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
+            player.gameMode = GameMode.ADVENTURE
+            player.inventory.clear()
+            player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+            player.playSound(Sound.sound(Key.key("entity.firework_rocket.twinkle"), Sound.Source.MASTER, 2f, 1f))
+            player.setCollisions(false)
         }
 
         EventListener(PlayerQuitEvent::class.java) { event ->
@@ -49,13 +66,18 @@ class AppearanceEvents : Registrable {
                 .usePrefix(false)
                 .usePAPI(true, event.player)
                 .component())
+            event.player.setCollisions(true)
         }
 
         // LOBBY EVENTS
 
         EventListener(PlayerChangedWorldEvent::class.java) { event ->
             val player = event.player
-            if (player.world.name != "world") return@EventListener
+            if (player.world.name != "world") {
+                event.player.setCollisions(true)
+                return@EventListener
+            }
+            event.player.setCollisions(false)
             player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value ?: 20.0
             player.foodLevel = 20
         }
