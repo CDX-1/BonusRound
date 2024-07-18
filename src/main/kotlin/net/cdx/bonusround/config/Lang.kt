@@ -22,7 +22,8 @@ class Lang {
         var quit: String = "<dark_gray>[<reset><red>-</red><dark_gray>]<reset> <gray>%player_name%"
         var unknownCommand: String = "That command doesn't seem to exist! Try <color:#DB2B39><click:run_command:/help>/help!"
         var undroppableItem: String = "You cannot drop this item!"
-        var chatFormat: String = "%0 %player_name% <reset><dark_gray>»<reset> <gray>"
+        var chatFormat: String = "%0%player_name% <reset><dark_gray>»<reset> <gray>"
+        var discordMinecraftFormat: String = "<color:#5865f2><bold>DISCORD<reset> <gray>%0 <dark_gray>» <gray>%1"
 
     }
 
@@ -66,10 +67,11 @@ class Lang {
         class General {
 
             var matchFoundTitle: Title = Title.of("<color:#DB2B39><bold>ᴍᴀᴛᴄʜ ғᴏᴜɴᴅ", "<gray>Loading game...")
+            var gameOverTitle: Title = Title.of("<color:#DB2B39><bold>ɢᴀᴍᴇ ᴏᴠᴇʀ", "<gray>")
             var searchingForArena: String = "Searching for arena..."
             var arenaFound: String = "Found arena: <color:#DB2B39>%0"
             var arenaSearchTimeout: String = "You've been removed from the arena queue because your search took longer than %0 minutes"
-            var arenaInstanceTimeout: String = "Your arena has timed out, this is likely a bug"
+            var gameTimeout: String = "Your game has been timed out!"
 
         }
 
@@ -79,6 +81,8 @@ class Lang {
         class Dodgeball {
 
             var dodgeballItemName: String = "<color:#DB2B39>Dodgeball"
+            var attackerHit: String = "You hit <color:#DB2B39>%0"
+            var victimHit: String = "You've been hit by <color:#DB2B39>%0"
 
         }
 

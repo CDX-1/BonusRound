@@ -2,6 +2,7 @@ package net.cdx.bonusround.games.api
 
 import net.cdx.bonusround.EventListener
 import net.cdx.bonusround.Main
+import net.cdx.bonusround.config.lang
 import net.cdx.bonusround.utils.async
 import net.cdx.bonusround.utils.sync
 import org.bukkit.entity.Player
@@ -70,7 +71,7 @@ class Queue(val id: String, val formattedName: String, val meta: QueueMeta, priv
             }
             async {
                 game.job = sync {
-                    game.broadcast("Match found!")
+                    game.broadcast(lang().games.general.matchFoundTitle)
                     startGame.accept(game)
                 }
             }

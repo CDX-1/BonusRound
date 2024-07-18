@@ -35,6 +35,8 @@ dependencies {
     // DEPENDENCIES & LIBRARIES
 
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("net.dv8tion:JDA:5.0.1")
+    compileOnly("club.minnced:discord-webhooks:0.8.4")
 
     implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")

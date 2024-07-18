@@ -11,7 +11,11 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitScheduler
 import java.util.concurrent.TimeUnit
 
 // FORMATTING
@@ -19,9 +23,10 @@ import java.util.concurrent.TimeUnit
 private val miniMessageSerializer = MiniMessage.miniMessage()
 private val legacySerializer = LegacyComponentSerializer.legacyAmpersand()
 private val gsonSerializer = GsonComponentSerializer.gson()
+private val plainSerializer = PlainTextComponentSerializer.plainText()
 
 @Suppress("MemberVisibilityCanBePrivate")
-class Formatter(private var message: String) {
+class Formatter(private var message: String = "") : Cloneable {
 
     companion object {
         fun minimessage(): MiniMessage {
@@ -35,6 +40,18 @@ class Formatter(private var message: String) {
         fun gson(): GsonComponentSerializer {
             return gsonSerializer
         }
+
+        fun plain(): PlainTextComponentSerializer {
+            return plainSerializer
+        }
+
+        fun title(formatTemplate: Formatter, title: net.cdx.bonusround.config.serializers.Title): Title {
+            val formatter1 = formatTemplate.clone()
+            val formatter2 = formatTemplate.clone()
+            formatter1.message = title.header
+            formatter2.message = title.subtext
+            return Title.title(formatter1.component(), formatter2.component())
+        }
     }
 
     private var usePrefix = true
@@ -47,7 +64,7 @@ class Formatter(private var message: String) {
         return this
     }
 
-    fun usePAPI(value: Boolean, player: Player): Formatter {
+    fun usePAPI(value: Boolean, player: Player?): Formatter {
         usePAPI = value
         papiPlayer = player
         return this
@@ -92,9 +109,16 @@ class Formatter(private var message: String) {
         return gsonSerializer.serialize(component())
     }
 
+    override fun clone(): Formatter {
+        return Formatter(message)
+            .usePrefix(this.usePrefix)
+            .usePAPI(this.usePAPI, this.papiPlayer)
+            .placeholders(*this.placeholders.toTypedArray())
+    }
+
 }
 
-// TIME CONVERSIONS
+// UNIT CONVERSIONS
 
 fun millis(): TimeUnit {
     return TimeUnit.MILLISECONDS
@@ -114,6 +138,18 @@ fun hours(): TimeUnit {
 
 fun days(): TimeUnit {
     return TimeUnit.DAYS
+}
+
+fun formatBytes(bytes: Long): String {
+    val kb = bytes / 1024
+    val mb = kb / 1024
+    val gb = mb / 1024
+    return when {
+        gb > 0 -> "$gb GB"
+        mb > 0 -> "$mb MB"
+        kb > 0 -> "$kb KB"
+        else -> "$bytes B"
+    }
 }
 
 // QUICK TASKS
@@ -161,3 +197,7 @@ fun delayAsync(delayTime: Long, task: () -> Unit): Job {
         }
     }
 }
+
+// SCHEDULER
+
+object Scheduler : BukkitScheduler by Bukkit.getScheduler()

@@ -35,6 +35,12 @@ class AppearanceEvents : Registrable {
                     .usePAPI(true, event.player)
                     .component())
             }
+
+            event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
+            event.player.gameMode = GameMode.ADVENTURE
+            event.player.inventory.clear()
+            event.player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+            event.player.playSound(Sound.sound(Key.key("entity.firework_rocket.twinkle"), Sound.Source.MASTER, 2f, 1f))
         }
 
         EventListener(PlayerQuitEvent::class.java) { event ->
@@ -62,14 +68,15 @@ class AppearanceEvents : Registrable {
             if (event.player.world.name != "world") return@EventListener
             if (50 < event.player.location.y) return@EventListener
             event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
+            event.player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 2f, 1f))
         }
-
-        // SIMPLER COMMANDS
 
         val renderer = MessageRenderer()
         EventListener(AsyncChatEvent::class.java) { event ->
             event.renderer(renderer)
         }
+
+        // SIMPLER COMMANDS
 
         EventListener(PlayerCommandSendEvent::class.java) { event ->
             if (event.player.isOp) return@EventListener
@@ -119,13 +126,6 @@ class AppearanceEvents : Registrable {
                     )
                 }
             }
-        }
-
-        EventListener(PlayerJoinEvent::class.java) { event ->
-            event.player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
-            event.player.gameMode = GameMode.ADVENTURE
-            event.player.inventory.clear()
-            event.player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 2f, 1f))
         }
 
     }

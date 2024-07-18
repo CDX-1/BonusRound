@@ -7,9 +7,13 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.cdx.bonusround.commands.DiscordCommand
 import net.cdx.bonusround.commands.HelpCommand
 import net.cdx.bonusround.commands.QueueCommand
+import net.cdx.bonusround.config.Config
 import net.cdx.bonusround.config.ConfigLoader
 import net.cdx.bonusround.config.Lang
 import net.cdx.bonusround.config.Overrides
+import net.cdx.bonusround.discord.Bot
+import net.cdx.bonusround.discord.bot
+import net.cdx.bonusround.discord.serverStopped
 import net.cdx.bonusround.games.Dodgeball
 import net.cdx.bonusround.games.api.QueueManager
 import net.cdx.bonusround.generic.AppearanceEvents
@@ -29,12 +33,14 @@ class Main : JavaPlugin() {
         lateinit var logger: Logger
         lateinit var guiRegistry: GuiRegistry
 
+        lateinit var conf: Config
         lateinit var lang: Lang
         lateinit var overrides: Overrides
 
         val placeholderResolvers: HashMap<String, Function<Player, String>> = HashMap()
     }
 
+    private lateinit var configLoader: ConfigLoader<Config>
     private lateinit var langLoader: ConfigLoader<Lang>
     private lateinit var overridesLoader: ConfigLoader<Overrides>
 
@@ -59,10 +65,16 @@ class Main : JavaPlugin() {
 
         // LANG
 
+        configLoader = ConfigLoader("config.conf", Config::class)
+        conf = configLoader.load()
         langLoader = ConfigLoader("lang.conf", Lang::class)
         lang = langLoader.load()
         overridesLoader = ConfigLoader("overrides.conf", Overrides::class)
         overrides = overridesLoader.load()
+
+        // DISCORD
+
+        Bot().register()
 
         // LISTENERS
 
@@ -97,8 +109,10 @@ class Main : JavaPlugin() {
 
     override fun onDisable() {
         CommandAPI.onDisable()
+        configLoader.save()
         langLoader.save()
         overridesLoader.save()
+        bot().serverStopped()
     }
 
     private val miniMessage = MiniMessage.miniMessage()

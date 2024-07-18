@@ -11,7 +11,9 @@ import net.cdx.bonusround.Main
 import net.cdx.bonusround.Registrable
 import net.cdx.bonusround.config.lang
 import net.cdx.bonusround.games.api.*
+import net.cdx.bonusround.games.api.GameEvent
 import net.cdx.bonusround.utils.*
+import net.cdx.bonusround.utils.Formatter
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -25,8 +27,9 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerToggleFlightEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
-import java.util.UUID
+import java.util.*
 import java.util.function.Consumer
 
 private lateinit var dodgeballArenaProvider: ArenaProvider
@@ -42,35 +45,69 @@ private val dodgeball = ItemBuilder(Material.BOW)
 private val dodgeballCharge = ItemBuilder(Material.ARROW)
     .displayName(Component.text(""))
     .droppable(false)
-    .count(64)
 
 private val dodgeball1v1 = Consumer<Game> { game ->
     suspendingAsync {
 
         val arenaSearch = CompletableDeferred<Arena?>()
         var arena: Arena? = null
+        var hasEnded = false
+        val countdowns = ArrayList<BukkitTask>()
 
-        game.onPlayerLost { player ->
-            inGame.remove(player)
-            player.allowFlight = false
-            player.inventory.clear()
-            game.release(cancelJob = true)
-            arena?.release()
-        }
+        game.onEvent { event ->
+            when (event.eventId) {
+                "playerHit" -> {
+                    val attacker = event.parameters["attacker"] as Player? ?: return@onEvent
+                    val hit = event.parameters["hit"] as Player? ?: return@onEvent
 
-        game.onEvent { parameters ->
-            val playerHit: Player = parameters["playerHit"] as Player? ?: return@onEvent
-            game.players.forEach { player ->
-                inGame.remove(player)
-                player.allowFlight = false
-                player.inventory.clear()
+                    attacker.sendMessage(Formatter(lang().games.dodgeball.attackerHit)
+                        .placeholders(hit.name)
+                        .component())
+
+                    hit.sendMessage(Formatter(lang().games.dodgeball.victimHit)
+                        .placeholders(attacker.name)
+                        .component())
+
+                    game.callEvent(GameEvent("end"))
+                }
+                "end" -> {
+                    countdowns.forEach { it.cancel() }
+                    countdowns.clear()
+                    game.players.forEach { player ->
+                        inGame.remove(player)
+                        player.allowFlight = false
+                        player.inventory.clear()
+                        player.gameMode = GameMode.SPECTATOR
+                        player.level = 0
+                        player.exp = 0F
+                    }
+
+                    hasEnded = true
+                    game.broadcast(lang().games.general.gameOverTitle)
+
+                    delay(2000) {
+                        game.release(cancelJob = true)
+                    }
+                }
+                "release" -> {
+                    countdowns.forEach { it.cancel() }
+                    countdowns.clear()
+                    arena?.release()
+                    game.players.forEach { player ->
+                        inGame.remove(player)
+                        player.allowFlight = false
+                        player.inventory.clear()
+                        player.gameMode = GameMode.ADVENTURE
+                    }
+                }
+                "disconnect" -> {
+                    val player = event.parameters["player"] as Player? ?: return@onEvent
+                    game.release(cancelJob = true)
+                }
             }
-            game.broadcast("${playerHit.name} got hit! game over.")
-            game.release()
-            arena?.release()
         }
 
-        game.broadcast("Waiting for available arena...")
+        game.broadcast(Formatter(lang().games.general.searchingForArena).component())
 
         Main.instance.launch {
             withContext(Dispatchers.IO) {
@@ -81,19 +118,20 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         arena = arenaSearch.await()
 
         if (arena == null) {
-            game.broadcast("Failed to find available arena in reasonable time")
+            game.broadcast(Formatter(lang().games.general.arenaSearchTimeout).component())
             game.release(cancelJob = true)
             return@suspendingAsync
         }
 
         arena.reserve()
-        game.broadcast("Arena found: ${arena.id}")
+        game.broadcast(Formatter(lang().games.general.arenaFound).component())
 
         sync {
+
             val red = game.players[0]
             val blue = game.players[1]
 
-            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16))
+            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180F, 180F))
             blue.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z - 16))
 
             game.players.forEach { player ->
@@ -102,12 +140,20 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                 player.allowFlight = true
                 dodgeball.give(player)
                 dodgeballCharge.atSlot(9, player)
+                async {
+                    countdowns.add(Animations.experienceBarCountdown(player, 90))
+                }
             }
 
             inGame[red] = game
             inGame[blue] = game
 
-            game.broadcast("Automatically releasing in 10 seconds for testing")
+            delay(seconds().toMillis(90)) {
+                if (hasEnded) return@delay
+                game.broadcast(Formatter(lang().games.general.gameTimeout).component())
+                game.callEvent(GameEvent("end"))
+            }
+
         }
     }
 }
@@ -130,7 +176,7 @@ class Dodgeball : Registrable {
             val force = event.force
             val item = ItemStack(Material.PLAYER_HEAD)
             val stand = player.world.spawnEntity(player.eyeLocation.subtract(Vector(0, 3, 0)), EntityType.ARMOR_STAND) as ArmorStand
-            NBT.modify(stand) { nbt ->
+            NBT.modifyPersistentData(stand) { nbt ->
                 nbt.setUUID("owner", player.uniqueId)
             }
             stand.isVisible = false
@@ -152,23 +198,33 @@ class Dodgeball : Registrable {
             if (event.entityType != EntityType.ARMOR_STAND) return@EventListener
             val entity = event.entity as ArmorStand
             if (entity.world.name != "arenas") return@EventListener
-            NBT.get(entity) { nbt ->
-                val uuid = nbt.getUUID("owner") ?: return@get
-                val nearby = entity.location.getNearbyPlayers(1.0)
-                nearby.forEach { player ->
-                    if (player.uniqueId == uuid) return@forEach
-                    if (!inGame.containsKey(player)) return@forEach
-                    delay(500) {
-                        inGame[player]?.callEvent(hashMapOf(Pair("playerHit", player)))
-                    }
+            val uuid = NBT.getPersistentData<UUID>(entity) { nbt -> nbt.getUUID("owner") }
+            if (uuid == null) {
+                Main.logger.info("null uuid")
+                return@EventListener
+            }
+            val nearby = entity.location.getNearbyPlayers(1.0)
+            nearby.forEach { player ->
+                Main.logger.info("1")
+                if (player.uniqueId == uuid) return@forEach
+                Main.logger.info("2")
+                if (!inGame.containsKey(player)) return@forEach
+                Main.logger.info("3")
+                delay(500) {
+                    Main.logger.info("4")
+                    val owner = Bukkit.getPlayer(uuid) ?: return@delay
+                    Main.logger.info("5")
+                    if (!owner.isOnline) return@delay
+                    Main.logger.info("6")
+                    inGame[player]?.callEvent(GameEvent("playerHit", hashMapOf(Pair("attacker", owner), Pair("hit", player))))
                 }
-                val belowBlockType = event.entity.world.getBlockAt(event.entity.location.subtract(Vector(0.toDouble(), 0.25, 0.toDouble()))).type
-                if (belowBlockType == Material.AIR || belowBlockType == Material.BARRIER || belowBlockType == Material.LIGHT) return@get
-                event.entity.world.spawnParticle(Particle.EXPLOSION, event.entity.location, 3)
-                event.entity.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
-                delay(seconds().toMillis(2)) {
-                    event.entity.remove()
-                }
+            }
+            val belowBlockType = event.entity.world.getBlockAt(event.entity.location.subtract(Vector(0.toDouble(), 0.25, 0.toDouble()))).type
+            if (belowBlockType == Material.AIR || belowBlockType == Material.BARRIER || belowBlockType == Material.LIGHT) return@EventListener
+            event.entity.world.spawnParticle(Particle.EXPLOSION, event.entity.location, 3)
+            event.entity.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
+            delay(seconds().toMillis(2)) {
+                event.entity.remove()
             }
         }
 
