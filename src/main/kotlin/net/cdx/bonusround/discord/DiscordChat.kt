@@ -112,7 +112,7 @@ class DiscordChat : ListenerAdapter() {
                         .setTimestamp(Instant.now())
                         .build()
                 )
-            }, 100L, 1200L)
+            }, 100, 20 * 60 * 10)
         }
     }
 

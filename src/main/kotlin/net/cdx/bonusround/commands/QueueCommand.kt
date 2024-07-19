@@ -52,13 +52,20 @@ class QueueDodgeballSubCommand : Command(
         }
 
         val queue = QueueManager getQueue "dodgeball_1v1"
-        queue!!.addPlayer(player)
+        val success = queue!!.addPlayer(player)
 
-        player.sendMessage(
-            Formatter(lang().commands.queue.joinedQueue)
-            .placeholders("Dodgeball $formatId")
-            .component())
-        player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))
+        if (success) {
+            player.sendMessage(
+                Formatter(lang().commands.queue.joinedQueue)
+                    .placeholders("Dodgeball $formatId")
+                    .component())
+            player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))
+        } else {
+            player.sendMessage(
+                Formatter(lang().commands.queue.inGame)
+                    .component())
+            player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
+        }
     }
 }
 

@@ -7,6 +7,7 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.cdx.bonusround.commands.DiscordCommand
 import net.cdx.bonusround.commands.HelpCommand
 import net.cdx.bonusround.commands.QueueCommand
+import net.cdx.bonusround.commands.Test
 import net.cdx.bonusround.config.Config
 import net.cdx.bonusround.config.ConfigLoader
 import net.cdx.bonusround.config.Lang
@@ -93,6 +94,7 @@ class Main : JavaPlugin() {
         QueueCommand().register()
         DiscordCommand().register()
         HelpCommand().register()
+        Test().register()
 
         // PLACEHOLDER API
 

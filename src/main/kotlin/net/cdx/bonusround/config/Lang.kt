@@ -42,6 +42,7 @@ class Lang {
             var joinedQueue: String = "Successfully joined queue: <color:#DB2B39>%0"
             var notInQueue: String = "You're not in a queue!"
             var leftQueue: String = "Successfully left queue!"
+            var inGame: String = "You're currently in a game!"
 
         }
 
@@ -81,6 +82,8 @@ class Lang {
         class Dodgeball {
 
             var dodgeballItemName: String = "<color:#DB2B39>Dodgeball"
+            var dodgeballDashItemName: String = "<color:#DB2B39><key.swapOffHand> To Dash"
+            var dodgeballDoubleJumpItemName: String = "<color:#DB2B39>Double <key.jump> To Double Jump"
             var attackerHit: String = "You hit <color:#DB2B39>%0"
             var victimHit: String = "You've been hit by <color:#DB2B39>%0"
 

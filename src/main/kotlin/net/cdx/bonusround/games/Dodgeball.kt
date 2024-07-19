@@ -23,6 +23,7 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityShootBowEvent
+import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.player.PlayerToggleFlightEvent
 import org.bukkit.inventory.ItemFlag
@@ -31,6 +32,8 @@ import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 import java.util.*
 import java.util.function.Consumer
+import kotlin.math.cos
+import kotlin.math.sin
 
 private lateinit var dodgeballArenaProvider: ArenaProvider
 private val inGame = HashMap<Player, Game>()
@@ -45,6 +48,22 @@ private val dodgeball = ItemBuilder(Material.BOW)
 private val dodgeballCharge = ItemBuilder(Material.ARROW)
     .displayName(Component.text(""))
     .droppable(false)
+private val dashItem = ItemBuilder(Material.STICK)
+    .displayName(Formatter(lang().games.dodgeball.dodgeballDashItemName)
+        .usePrefix(false)
+        .component())
+    .unbreakable(true)
+    .droppable(false)
+    .customModelData(102)
+private val doubleJumpItem = ItemBuilder(Material.STRING)
+    .displayName(Formatter(lang().games.dodgeball.dodgeballDoubleJumpItemName)
+        .usePrefix(false)
+        .component())
+    .unbreakable(true)
+    .droppable(false)
+    .customModelData(101)
+private val dashAbility = PlayerAbility("dash", seconds().toMillis(5))
+private val doubleJumpAbility = PlayerAbility("dash", seconds().toMillis(2))
 
 private val dodgeball1v1 = Consumer<Game> { game ->
     suspendingAsync {
@@ -54,11 +73,37 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         var hasEnded = false
         val countdowns = ArrayList<BukkitTask>()
 
+        game.registerPlayerAbility(dashAbility) { player ->
+            val currentVelocity = player.velocity
+            val horizontalVelocity = Vector(currentVelocity.x, 0.0, currentVelocity.z)
+
+            if (horizontalVelocity.length() > 0) {
+                val direction = horizontalVelocity.normalize()
+                val pushVector = direction.multiply(1.5)
+                player.velocity = player.velocity.add(pushVector)
+            } else {
+                val yaw = Math.toRadians(player.location.yaw.toDouble())
+                val lookDirection = Vector(-sin(yaw), 0.0, cos(yaw))
+                val pushVector = lookDirection.multiply(1.5)
+                player.velocity = player.velocity.add(pushVector)
+            }
+            player.setCooldown(Material.STICK, ((dashAbility.cooldown / 1000) * 20).toInt())
+            player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+        }
+
+        game.registerPlayerAbility(doubleJumpAbility) { player ->
+            player.velocity = Vector(0, 1, 0)
+            player.setCooldown(Material.STRING, ((doubleJumpAbility.cooldown / 1000) * 20).toInt())
+            player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+        }
+
         game.onEvent { event ->
             when (event.eventId) {
                 "playerHit" -> {
                     val attacker = event.parameters["attacker"] as Player? ?: return@onEvent
                     val hit = event.parameters["hit"] as Player? ?: return@onEvent
+
+                    val cloneLoc = hit.location.clone()
 
                     attacker.sendMessage(Formatter(lang().games.dodgeball.attackerHit)
                         .placeholders(hit.name)
@@ -67,6 +112,18 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     hit.sendMessage(Formatter(lang().games.dodgeball.victimHit)
                         .placeholders(attacker.name)
                         .component())
+
+                    game.players.forEach { player ->
+                        player.playSound(Sound.sound(Key.key("entity.ender_dragon.growl"), Sound.Source.MASTER, 1f, 1f))
+                        Animations.createBlockWave(hit.location, 4)
+                        val task = Scheduler.runTaskTimer(Main.instance, Runnable {
+                            player.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
+                            cloneLoc.world.spawnParticle(Particle.EXPLOSION, cloneLoc, 1, 0.0, 0.0, 0.0)
+                        }, 20L, 2L)
+                        delay(3000) {
+                            task.cancel()
+                        }
+                    }
 
                     game.callEvent(GameEvent("end"))
                 }
@@ -85,16 +142,16 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     hasEnded = true
                     game.broadcast(lang().games.general.gameOverTitle)
 
-                    delay(2000) {
+                    delay(5000) {
                         game.release(cancelJob = true)
                     }
                 }
                 "release" -> {
                     countdowns.forEach { it.cancel() }
+                    inGame.clear()
                     countdowns.clear()
                     arena?.release()
                     game.players.forEach { player ->
-                        inGame.remove(player)
                         player.allowFlight = false
                         player.inventory.clear()
                         player.gameMode = GameMode.ADVENTURE
@@ -124,14 +181,16 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         }
 
         arena.reserve()
-        game.broadcast(Formatter(lang().games.general.arenaFound).component())
+        game.broadcast(Formatter(lang().games.general.arenaFound)
+            .placeholders(arena.id)
+            .component())
 
         sync {
 
             val red = game.players[0]
             val blue = game.players[1]
 
-            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180F, 180F))
+            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180F, 90F))
             blue.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z - 16))
 
             game.players.forEach { player ->
@@ -140,6 +199,8 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                 player.allowFlight = true
                 dodgeball.give(player)
                 dodgeballCharge.atSlot(9, player)
+                dashItem.atSlot(8, player)
+                doubleJumpItem.atSlot(7, player)
                 async {
                     countdowns.add(Animations.experienceBarCountdown(player, 90))
                 }
@@ -172,6 +233,10 @@ class Dodgeball : Registrable {
             if (event.entity !is Player) return@EventListener
             val player = event.entity as Player
             if (!inGame.containsKey(player)) return@EventListener
+            val bow = player.inventory.itemInMainHand
+            if (bow.type != Material.BOW) return@EventListener
+            if (player.getCooldown(Material.BOW) > 0) return@EventListener
+            player.setCooldown(Material.BOW, 2 * 20)
             event.isCancelled = true
             val force = event.force
             val item = ItemStack(Material.PLAYER_HEAD)
@@ -198,24 +263,18 @@ class Dodgeball : Registrable {
             if (event.entityType != EntityType.ARMOR_STAND) return@EventListener
             val entity = event.entity as ArmorStand
             if (entity.world.name != "arenas") return@EventListener
-            val uuid = NBT.getPersistentData<UUID>(entity) { nbt -> nbt.getUUID("owner") }
-            if (uuid == null) {
-                Main.logger.info("null uuid")
-                return@EventListener
+            entity.world.spawnParticle(Particle.FIREWORK, entity.location, 5, 0.0, 0.0, 0.0, 0.0)
+            doChance(20.0) {
+                event.entity.world.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1f, 1f))
             }
+            val uuid = NBT.getPersistentData<UUID>(entity) { nbt -> nbt.getUUID("owner") } ?: return@EventListener
             val nearby = entity.location.getNearbyPlayers(1.0)
             nearby.forEach { player ->
-                Main.logger.info("1")
                 if (player.uniqueId == uuid) return@forEach
-                Main.logger.info("2")
                 if (!inGame.containsKey(player)) return@forEach
-                Main.logger.info("3")
                 delay(500) {
-                    Main.logger.info("4")
                     val owner = Bukkit.getPlayer(uuid) ?: return@delay
-                    Main.logger.info("5")
                     if (!owner.isOnline) return@delay
-                    Main.logger.info("6")
                     inGame[player]?.callEvent(GameEvent("playerHit", hashMapOf(Pair("attacker", owner), Pair("hit", player))))
                 }
             }
@@ -232,16 +291,21 @@ class Dodgeball : Registrable {
             val player = event.player
             if (!inGame.containsKey(player)) return@EventListener
             event.isCancelled = true
-            player.velocity = Vector(0, 1, 0)
-            player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+            inGame[player]?.callAbility(doubleJumpAbility, event.player)
         }
 
         EventListener(PlayerSwapHandItemsEvent::class.java) { event ->
             val player = event.player
             if (!inGame.containsKey(player)) return@EventListener
             event.isCancelled = true
-            player.velocity = player.eyeLocation.direction.multiply(Vector(2, 0, 2)).add(Vector(0, 1, 0))
-            player.playSound(Sound.sound(Key.key("entity.firework_rocket.large_blast"), Sound.Source.MASTER, 2f, 1f))
+            inGame[player]?.callAbility(dashAbility, event.player)
+        }
+
+        EventListener(FoodLevelChangeEvent::class.java) { event ->
+            if (event.entity !is Player) return@EventListener
+            val player = event.entity as Player
+            if (!inGame.containsKey(player)) return@EventListener
+            event.isCancelled = true
         }
 
         // 1v1s

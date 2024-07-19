@@ -13,8 +13,10 @@ class ItemEvents : Registrable {
 
         EventListener(PlayerDropItemEvent::class.java) { event ->
             NBT.get(event.itemDrop.itemStack) { nbt ->
-                event.isCancelled = nbt.getOrDefault("droppable", true)
-                event.player.sendMessage(Formatter(lang().general.undroppableItem).component())
+                event.isCancelled = !nbt.getOrDefault("droppable", true)
+                if (event.isCancelled) {
+                    event.player.sendMessage(Formatter(lang().general.undroppableItem).component())
+                }
             }
         }
 

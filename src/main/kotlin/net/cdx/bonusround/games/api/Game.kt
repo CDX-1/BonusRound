@@ -9,12 +9,26 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
+import java.util.*
 import java.util.function.Consumer
 
 class Game(val players: ArrayList<Player>) {
 
     lateinit var job: Job
     private val onEventHandlers = ArrayList<Consumer<GameEvent>>()
+    private val abilities = HashMap<PlayerAbility, Consumer<Player>>()
+    private val abilityCooldowns = HashMap<UUID, Long>()
+
+    fun registerPlayerAbility(ability: PlayerAbility, handler: Consumer<Player>) {
+        abilities[ability] = handler
+    }
+
+    fun callAbility(ability: PlayerAbility, player: Player) {
+        val last = abilityCooldowns[player.uniqueId] ?: 0
+        if (System.currentTimeMillis() - last < ability.cooldown) return
+        abilityCooldowns[player.uniqueId] = System.currentTimeMillis()
+        abilities[ability]?.accept(player)
+    }
 
     fun onEvent(handler: Consumer<GameEvent>) {
         onEventHandlers.add(handler)
@@ -61,11 +75,15 @@ class Game(val players: ArrayList<Player>) {
         val lobby = Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5)
         if (player != null) {
             QueueManager releasePlayer player
+            players.remove(player)
             if (returnToLobby) player.teleport(lobby)
         } else {
-            players.forEach { pl ->
+            val iterator = players.iterator()
+            while (iterator.hasNext()) {
+                val pl = iterator.next()
                 QueueManager releasePlayer pl
-               if (returnToLobby) pl.teleport(lobby)
+                if (returnToLobby) pl.teleport(lobby)
+                iterator.remove()
             }
         }
         if (cancelJob) {
