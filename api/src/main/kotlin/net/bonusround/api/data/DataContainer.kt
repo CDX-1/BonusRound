@@ -1,4 +1,4 @@
-package net.bonusround.game.data
+package net.bonusround.api.data
 
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.id.IdTable

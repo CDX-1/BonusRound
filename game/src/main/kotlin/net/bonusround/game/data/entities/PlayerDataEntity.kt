@@ -1,6 +1,6 @@
-package net.bonusround.game.data.schemas.entities
+package net.bonusround.game.data.entities
 
-import net.bonusround.game.data.schemas.tables.PlayerDataTable
+import net.bonusround.game.data.tables.PlayerDataTable
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID

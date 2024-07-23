@@ -1,12 +1,12 @@
-package net.bonusround.game.data.schemas.tables
+package net.bonusround.game.data.tables
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import net.bonusround.api.utils.EventListener
 import net.bonusround.game.Main
-import net.bonusround.game.data.DataContainerService
-import net.bonusround.game.data.createTableName
-import net.bonusround.game.data.schemas.containers.PlayerDataContainer
-import net.bonusround.game.data.schemas.entities.PlayerDataEntity
+import net.bonusround.api.data.DataContainerService
+import net.bonusround.api.data.createTableName
+import net.bonusround.game.data.containers.PlayerDataContainer
+import net.bonusround.game.data.entities.PlayerDataEntity
 import net.bonusround.api.utils.asyncTransaction
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent

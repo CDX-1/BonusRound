@@ -13,7 +13,7 @@ import net.bonusround.game.configs.Config
 import net.bonusround.api.config.ConfigLoader
 import net.bonusround.game.configs.Lang
 import net.bonusround.game.configs.Overrides
-import net.bonusround.game.data.DataManager
+import net.bonusround.api.data.DataManager
 import net.bonusround.game.discord.Bot
 import net.bonusround.game.discord.bot
 import net.bonusround.game.discord.serverStopped
@@ -22,6 +22,8 @@ import net.bonusround.game.games.Dodgeball
 import net.bonusround.api.game.QueueManager
 import net.bonusround.api.utils.Formatter
 import net.bonusround.game.configs.lang
+import net.bonusround.game.data.containers.PlayerDataContainer
+import net.bonusround.game.data.tables.PlayerDataTable
 import net.bonusround.game.generic.AppearanceEvents
 import net.bonusround.game.generic.ItemEvents
 import net.kyori.adventure.text.format.TextColor
@@ -80,7 +82,15 @@ class Main : SuspendingJavaPlugin() {
 
         // DATABASE
 
-        DataManager().register()
+        DataManager(
+            conf.databaseType,
+            conf.sqliteFileName,
+            conf.host,
+            conf.user,
+            conf.pass
+        )
+            .registerTable(PlayerDataTable, PlayerDataContainer::class)
+            .register()
 
         // DISCORD
 

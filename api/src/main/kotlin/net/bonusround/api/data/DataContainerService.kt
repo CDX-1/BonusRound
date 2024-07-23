@@ -1,9 +1,8 @@
-package net.bonusround.game.data
+package net.bonusround.api.data
 
 import kotlinx.coroutines.runBlocking
-import net.bonusround.game.data.schemas.containers.PlayerDataContainer
-import net.bonusround.game.data.schemas.tables.PlayerDataTable
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -11,10 +10,7 @@ import kotlin.reflect.KClass
 object DataContainerService {
 
     private val containers = ConcurrentHashMap<KClass<*>, ConcurrentHashMap<Any, Any>>()
-
-    init {
-        containers[PlayerDataContainer::class] = ConcurrentHashMap()
-    }
+    private val tables = ArrayList<Table>()
 
     @Suppress("UNCHECKED_CAST")
     fun <ID : Comparable<ID>, C : Any> getContainers(clazz: KClass<C>, id: KClass<ID>): ConcurrentHashMap<ID, C>? {
@@ -24,9 +20,16 @@ object DataContainerService {
     fun validateTables() {
         runBlocking {
             transaction {
-                SchemaUtils.createMissingTablesAndColumns(PlayerDataTable)
+                tables.forEach { table ->
+                    SchemaUtils.createMissingTablesAndColumns(table)
+                }
             }
         }
+    }
+
+    fun addTable(table: Table, container: KClass<*>) {
+        tables.add(table)
+        containers[container::class] = ConcurrentHashMap()
     }
 
 }

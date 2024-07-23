@@ -1,6 +1,6 @@
 package net.bonusround.game.extensions
 
-import net.bonusround.game.data.PlayerDataProvider
+import net.bonusround.game.data.providers.PlayerDataProvider
 import org.bukkit.entity.Player
 
 val Player.dataProvider

@@ -1,8 +1,9 @@
-package net.bonusround.game.data
+package net.bonusround.game.data.providers
 
-import net.bonusround.game.data.schemas.containers.PlayerDataContainer
-import org.bukkit.entity.Player
+import net.bonusround.api.data.DataContainerService
+import net.bonusround.game.data.containers.PlayerDataContainer
 import java.util.*
+import org.bukkit.entity.Player
 
 private val playerDataProviders = HashMap<UUID, PlayerDataProvider>()
 

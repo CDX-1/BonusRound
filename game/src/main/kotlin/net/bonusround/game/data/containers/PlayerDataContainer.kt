@@ -1,8 +1,8 @@
-package net.bonusround.game.data.schemas.containers
+package net.bonusround.game.data.containers
 
-import net.bonusround.game.data.DataContainer
-import net.bonusround.game.data.schemas.entities.PlayerDataEntity
-import net.bonusround.game.data.schemas.tables.PlayerDataTable
+import net.bonusround.api.data.DataContainer
+import net.bonusround.game.data.entities.PlayerDataEntity
+import net.bonusround.game.data.tables.PlayerDataTable
 import java.util.*
 
 data class PlayerDataContainer(
