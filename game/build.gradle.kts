@@ -31,8 +31,6 @@ dependencies {
     implementation(libs.packetevents)
     implementation(libs.inventoryframework)
     implementation(libs.nbtapi)
-
-    // implementation(project(":api"))
 }
 
 tasks.withType<ShadowJar> {
