@@ -3,6 +3,7 @@
 package net.bonusround.game.utils
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
@@ -57,3 +58,9 @@ suspend fun <T> asyncTransaction(block: suspend () -> T): T =
     withContext(Dispatchers.IO) {
         newSuspendedTransaction { block() }
     }
+
+fun launch(task: suspend CoroutineScope.() -> Unit) {
+    Main.instance.launch {
+        task()
+    }
+}
