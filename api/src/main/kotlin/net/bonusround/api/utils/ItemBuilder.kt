@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
+
 package net.bonusround.api.utils
 
 import de.tr7zw.changeme.nbtapi.NBT

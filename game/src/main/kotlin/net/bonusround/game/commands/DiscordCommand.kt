@@ -15,7 +15,7 @@ class DiscordCommand : Command(
     permission = "commands.default.discord",
     aliases = arrayOf("d", "dis")
 ) {
-    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
+    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
         player.sendMessage(Formatter(lang().commands.discord.serverInvite).component())
     }
 }

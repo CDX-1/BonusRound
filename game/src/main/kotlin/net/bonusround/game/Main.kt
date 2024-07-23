@@ -158,7 +158,7 @@ class Main : SuspendingJavaPlugin() {
             )
         }
 
-        placeholderResolvers["top_rating"] = Function { player ->
+        placeholderResolvers["top_rating"] = Function { _ ->
             return@Function "0"
         }
 

@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED")
+
 package net.bonusround.api.utils
 
 import net.bonusround.api.BonusRoundAPI

@@ -44,7 +44,7 @@ object PlayerDataTable : UUIDTable(createTableName("player_data")) {
                     UUID::class
                 )!![event.player.uniqueId]?.let { data ->
                     asyncTransaction {
-                        PlayerDataTable.upsert() {
+                        PlayerDataTable.upsert {
                             it[id] = event.player.uniqueId
                             it[bits] = data.bits
                             it[firstSeen] = data.firstSeen

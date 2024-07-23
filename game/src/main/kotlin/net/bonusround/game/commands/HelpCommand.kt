@@ -11,7 +11,7 @@ class HelpCommand : Command(
     fullDescription = "Get access to an extensive guide covering the different games, commands and mechanics",
     permission = "commands.default.help"
 ) {
-    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
+    override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { _, _ ->
 //        val gui = Main.guiRegistry.get("help")
 //
 //        gui.setOnClose { event ->

@@ -179,7 +179,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                 }
 
                 "disconnect" -> {
-                    val player = event.parameters["player"] as Player? ?: return@onEvent
+                    // val player = event.parameters["player"] as Player? ?: return@onEvent
                     game.release(cancelJob = true)
                 }
             }
