@@ -1,9 +1,8 @@
 package net.bonusround.game.generic
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.bonusround.game.BonusRoundCommandList
 import net.bonusround.game.EventListener
-import net.bonusround.game.Registrable
+import net.bonusround.game.utils.Registrable
 import net.bonusround.game.config.lang
 import net.bonusround.game.utils.Formatter
 import net.kyori.adventure.key.Key

@@ -1,4 +1,4 @@
-package net.bonusround.game
+package net.bonusround.game.utils
 
 interface Registrable {
     fun register()

@@ -1,6 +1,6 @@
 package net.bonusround.game.discord
 
-import net.bonusround.game.Registrable
+import net.bonusround.game.utils.Registrable
 import net.bonusround.game.config.conf
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder

@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.bonusround.game.EventListener
 import net.bonusround.game.Main
-import net.bonusround.game.Registrable
+import net.bonusround.game.utils.Registrable
 import net.bonusround.game.config.lang
 import net.bonusround.game.games.api.*
 import net.bonusround.game.games.api.GameEvent
