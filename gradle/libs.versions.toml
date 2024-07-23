@@ -1,0 +1,55 @@
+[versions]
+kotlin = "1.9.20"
+kotlinx = "1.9.0-RC"
+shadow = "8.1.8"
+paperweight = "1.7.1"
+runpaper = "2.3.0"
+mccoroutines = "2.18.0"
+exposed = "0.52.0"
+jda = "5.0.1"
+jda-webhooks = "0.8.4"
+configurate = "4.1.2"
+packetevents = "2.4.0"
+placeholderapi = "2.11.6"
+mysql = "8.0.33"
+sqlite = "3.44.1.0"
+inventoryframework = "0.10.15"
+nbtapi = "2.13.1"
+command-api = "9.5.0"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
+exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
+exposed-java-time = { group = "org.jetbrains.exposed", name = "exposed-java-time", version.ref = "exposed" }
+mccoroutines-api = { group = "com.github.shynixn.mccoroutine", name = "mccoroutine-bukkit-api", version.ref = "mccoroutines" }
+mccoroutines-core = { group = "com.github.shynixn.mccoroutine", name = "mccoroutine-bukkit-core", version.ref = "mccoroutines" }
+configurate = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
+configurate-kotlin = { group = "org.spongepowered", name = "configurate-extra-kotlin", version.ref = "configurate" }
+packetevents = { group = "com.github.retrooper", name = "packetevents-spigot", version.ref = "packetevents" }
+jda = { group = "net.dv8tion", name = "JDA", version.ref = "jda" }
+jda-webhooks = { group = "club.minnced", name = "discord-webhooks", version.ref = "jda-webhooks" }
+placeholderapi = { group = "me.clip", name = "placeholderapi", version.ref = "placeholderapi" }
+mysql = { group = "mysql", name = "mysql-connector-java", version.ref = "mysql" }
+sqlite = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite" }
+inventoryframework = { group = "com.github.stefvanschie.inventoryframework", name = "IF", version.ref = "inventoryframework" }
+nbtapi = { group = "de.tr7zw", name = "item-nbt-api", version.ref = "nbtapi" }
+commandapi = { group = "dev.jorel", name = "commandapi-bukkit-shade-mojang-mapped", version.ref = "command-api" }
+
+[bundles]
+kotlin = ["kotlin-stdlib", "kotlin-coroutines", "kotlin-reflect"]
+mccoroutines = ["mccoroutines-api", "mccoroutines-core"]
+exposed = ["exposed-core", "exposed-dao", "exposed-java-time", "exposed-jdbc"]
+config = ["configurate", "configurate-kotlin"]
+jda = ["jda", "jda-webhooks"]
+database = ["mysql", "sqlite"]
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+shadow = { id = "io.github.goooler.shadow", version.ref = "shadow" }
+paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
+runpaper = { id = "xyz.jpenilla.run-paper", version.ref = "runpaper" }
