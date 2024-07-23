@@ -1,4 +1,4 @@
-main: net.cdx.bonusround.Main
+main: net.bonusround.game.Main
 version: 1.0.0
 name: BonusRound
 author: CDX
