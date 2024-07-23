@@ -7,10 +7,10 @@ import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.bonusround.api.utils.EventListener
-import net.bonusround.game.Main
-import net.bonusround.game.configs.conf
 import net.bonusround.api.utils.Formatter
 import net.bonusround.api.utils.formatBytes
+import net.bonusround.game.Main
+import net.bonusround.game.configs.conf
 import net.bonusround.game.configs.lang
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter

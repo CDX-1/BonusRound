@@ -1,7 +1,7 @@
 package net.bonusround.game.configs
 
-import net.bonusround.game.Main
 import net.bonusround.api.config.serializers.Title
+import net.bonusround.game.Main
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 fun lang(): Lang {

@@ -1,10 +1,10 @@
 package net.bonusround.game.generic
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.bonusround.api.utils.EventListener
-import net.bonusround.api.utils.Registrable
-import net.bonusround.api.utils.Formatter
 import net.bonusround.api.commands.BonusRoundCommandList
+import net.bonusround.api.utils.EventListener
+import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.Registrable
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound

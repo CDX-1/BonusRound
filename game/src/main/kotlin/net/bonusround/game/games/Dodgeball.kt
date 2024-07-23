@@ -7,13 +7,12 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import net.bonusround.api.utils.EventListener
-import net.bonusround.game.Main
 import net.bonusround.api.game.*
-import net.bonusround.api.utils.Registrable
 import net.bonusround.api.game.GameEvent
 import net.bonusround.api.utils.*
+import net.bonusround.api.utils.EventListener
 import net.bonusround.api.utils.Formatter
+import net.bonusround.game.Main
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound

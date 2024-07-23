@@ -13,7 +13,7 @@ object DataContainerService {
     private val tables = ArrayList<Table>()
 
     @Suppress("UNCHECKED_CAST")
-    fun <ID : Comparable<ID>, C : Any> getContainers(clazz: KClass<C>, id: KClass<ID>): ConcurrentHashMap<ID, C>? {
+    fun <ID : Comparable<ID>, C : Any> getContainers(clazz: KClass<C>, @Suppress("UNUSED_PARAMETER") id: KClass<ID>): ConcurrentHashMap<ID, C>? {
         return containers[clazz] as? ConcurrentHashMap<ID, C>
     }
 

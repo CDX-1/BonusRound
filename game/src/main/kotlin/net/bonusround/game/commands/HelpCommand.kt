@@ -2,7 +2,6 @@ package net.bonusround.game.commands
 
 import dev.jorel.commandapi.executors.CommandArguments
 import net.bonusround.api.commands.Command
-import net.bonusround.game.Main
 import org.apache.logging.log4j.util.BiConsumer
 import org.bukkit.entity.Player
 

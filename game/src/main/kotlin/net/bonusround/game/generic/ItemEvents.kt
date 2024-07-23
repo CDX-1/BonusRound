@@ -2,8 +2,8 @@ package net.bonusround.game.generic
 
 import de.tr7zw.changeme.nbtapi.NBT
 import net.bonusround.api.utils.EventListener
-import net.bonusround.api.utils.Registrable
 import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.Registrable
 import net.bonusround.game.configs.lang
 import org.bukkit.event.player.PlayerDropItemEvent
 
