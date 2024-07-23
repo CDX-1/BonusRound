@@ -41,15 +41,17 @@ class AppearanceEvents : Registrable {
             if (player.hasPlayedBefore()) {
                 event.joinMessage(
                     Formatter(lang().general.join)
-                    .usePrefix(false)
-                    .usePAPI(true, player)
-                    .component())
+                        .usePrefix(false)
+                        .usePAPI(true, player)
+                        .component()
+                )
             } else {
                 event.joinMessage(
                     Formatter(lang().general.joinUnique)
-                    .usePrefix(false)
-                    .usePAPI(true, player)
-                    .component())
+                        .usePrefix(false)
+                        .usePAPI(true, player)
+                        .component()
+                )
             }
 
             player.teleport(Location(Bukkit.getWorld("world"), 0.5, 65.0, 0.5))
@@ -63,9 +65,10 @@ class AppearanceEvents : Registrable {
         EventListener(PlayerQuitEvent::class.java) { event ->
             event.quitMessage(
                 Formatter(lang().general.quit)
-                .usePrefix(false)
-                .usePAPI(true, event.player)
-                .component())
+                    .usePrefix(false)
+                    .usePAPI(true, event.player)
+                    .component()
+            )
             event.player.setCollisions(true)
         }
 

@@ -65,9 +65,13 @@ class Game(val players: ArrayList<Player>) {
     }
 
     fun broadcast(title: net.cdx.bonusround.config.serializers.Title) {
-        broadcast(Formatter.title(Formatter()
-            .usePrefix(false),
-            title))
+        broadcast(
+            Formatter.title(
+                Formatter()
+                    .usePrefix(false),
+                title
+            )
+        )
     }
 
     fun release(player: Player? = null, cancelJob: Boolean = false, returnToLobby: Boolean = true) {

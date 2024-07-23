@@ -1,20 +1,22 @@
 package net.cdx.bonusround
 
 import com.github.retrooper.packetevents.PacketEvents
+import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.cdx.bonusround.commands.DiscordCommand
 import net.cdx.bonusround.commands.HelpCommand
 import net.cdx.bonusround.commands.QueueCommand
-import net.cdx.bonusround.commands.Test
 import net.cdx.bonusround.config.Config
 import net.cdx.bonusround.config.ConfigLoader
 import net.cdx.bonusround.config.Lang
 import net.cdx.bonusround.config.Overrides
+import net.cdx.bonusround.data.DataManager
 import net.cdx.bonusround.discord.Bot
 import net.cdx.bonusround.discord.bot
 import net.cdx.bonusround.discord.serverStopped
+import net.cdx.bonusround.extensions.dataProvider
 import net.cdx.bonusround.games.Dodgeball
 import net.cdx.bonusround.games.api.QueueManager
 import net.cdx.bonusround.generic.AppearanceEvents
@@ -23,11 +25,10 @@ import net.cdx.bonusround.gui.GuiRegistry
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 import java.util.function.Function
 import java.util.logging.Logger
 
-class Main : JavaPlugin() {
+class Main : SuspendingJavaPlugin() {
 
     companion object {
         lateinit var instance: Main
@@ -52,7 +53,7 @@ class Main : JavaPlugin() {
         PacketEvents.getAPI().load()
     }
 
-    override fun onEnable() {
+    override suspend fun onEnableAsync() {
 
         // INIT
 
@@ -72,6 +73,10 @@ class Main : JavaPlugin() {
         lang = langLoader.load()
         overridesLoader = ConfigLoader("overrides.conf", Overrides::class)
         overrides = overridesLoader.load()
+
+        // DATABASE
+
+        DataManager().register()
 
         // DISCORD
 
@@ -94,7 +99,6 @@ class Main : JavaPlugin() {
         QueueCommand().register()
         DiscordCommand().register()
         HelpCommand().register()
-        Test().register()
 
         // PLACEHOLDER API
 
@@ -109,7 +113,7 @@ class Main : JavaPlugin() {
         }
     }
 
-    override fun onDisable() {
+    override suspend fun onDisableAsync() {
         CommandAPI.onDisable()
         configLoader.save()
         langLoader.save()
@@ -121,21 +125,31 @@ class Main : JavaPlugin() {
     private fun registerPlaceholders() {
         placeholderResolvers["queue_name"] = Function { player ->
             val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
-            return@Function miniMessage.serialize(miniMessage.deserialize(queue.formattedName).color(TextColor.fromHexString("#DB2B39")))
+            return@Function miniMessage.serialize(
+                miniMessage.deserialize(queue.formattedName).color(TextColor.fromHexString("#DB2B39"))
+            )
         }
 
         placeholderResolvers["queue_size"] = Function { player ->
             val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
-            return@Function miniMessage.serialize(miniMessage.deserialize("${queue.size}").color(TextColor.fromHexString("#DB2B39")))
+            return@Function miniMessage.serialize(
+                miniMessage.deserialize("${queue.size}").color(TextColor.fromHexString("#DB2B39"))
+            )
         }
 
         placeholderResolvers["queue_needed"] = Function { player ->
             val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
-            return@Function miniMessage.serialize(miniMessage.deserialize("${queue.meta.minPlayers}").color(TextColor.fromHexString("#DB2B39")))
+            return@Function miniMessage.serialize(
+                miniMessage.deserialize("${queue.meta.minPlayers}").color(TextColor.fromHexString("#DB2B39"))
+            )
         }
 
         placeholderResolvers["top_rating"] = Function { player ->
             return@Function "0"
+        }
+
+        placeholderResolvers["bits"] = Function { player ->
+            return@Function player.dataProvider.playerData?.bits?.toString() ?: "0"
         }
     }
 

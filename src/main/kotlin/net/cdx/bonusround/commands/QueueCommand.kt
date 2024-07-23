@@ -58,12 +58,14 @@ class QueueDodgeballSubCommand : Command(
             player.sendMessage(
                 Formatter(lang().commands.queue.joinedQueue)
                     .placeholders("Dodgeball $formatId")
-                    .component())
+                    .component()
+            )
             player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))
         } else {
             player.sendMessage(
                 Formatter(lang().commands.queue.inGame)
-                    .component())
+                    .component()
+            )
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
         }
     }

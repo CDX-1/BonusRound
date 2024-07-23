@@ -38,12 +38,22 @@ dependencies {
     compileOnly("net.dv8tion:JDA:5.0.1")
     compileOnly("club.minnced:discord-webhooks:0.8.4")
 
+    implementation("org.jetbrains.exposed:exposed-core:0.52.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.52.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.52.0")
+
+    implementation("mysql:mysql-connector-java:8.0.33")
+    implementation("org.xerial:sqlite-jdbc:3.44.1.0")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.23")
     implementation("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.18.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.18.0")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
-    implementation("org.spongepowered:configurate-extra-kotlin:4.1.2")
+    implementation("org.spongepowered:configurate-extra-kotlin:4.1.2") {
+        exclude("org.jetbrains.kotlin")
+    }
     implementation("com.github.retrooper:packetevents-spigot:2.4.0")
     implementation("com.github.stefvanschie.inventoryframework:IF:0.10.15")
     implementation("de.tr7zw:item-nbt-api:2.13.1")
@@ -55,7 +65,6 @@ tasks.withType<ShadowJar> {
     relocate("io.github.retrooper.packetevents", "net.cdx.bonusround.packets.impl")
     relocate("com.github.stefvanschie.inventoryframework", "net.cdx.bonusround.gui.api")
     relocate("de.tr7zw.changeme.nbtapi", "net.cdx.bonusround.nbt.api")
-    // minimize()
 }
 
 tasks.assemble {

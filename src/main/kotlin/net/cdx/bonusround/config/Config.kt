@@ -10,6 +10,12 @@ fun conf(): Config {
 @ConfigSerializable
 class Config {
 
+    var databaseType: String = "sqlite"
+    var host: String = ""
+    var user: String = ""
+    var pass: String = ""
+    var sqliteFileName: String = "data"
+
     var discordToken: String = ""
     var discordChatChannel: String = ""
     var discordChatWebhook: String = ""

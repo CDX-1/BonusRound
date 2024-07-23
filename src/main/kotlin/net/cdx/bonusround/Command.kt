@@ -6,7 +6,6 @@ import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.executors.CommandArguments
 import dev.jorel.commandapi.executors.CommandExecutor
 import org.apache.logging.log4j.util.BiConsumer
-import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -19,7 +18,7 @@ abstract class Command(
     val permission: String? = null,
     val arguments: MutableList<out Argument<*>> = mutableListOf(),
     val subcommands: MutableList<out Command> = mutableListOf(),
-    val aliases: Array<out String> = arrayOf()
+    val aliases: Array<out String> = arrayOf(),
 ) {
 
     open var onPlayer: BiConsumer<Player, CommandArguments>? = null

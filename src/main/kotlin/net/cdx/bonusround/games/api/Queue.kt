@@ -10,8 +10,14 @@ import org.bukkit.event.player.PlayerQuitEvent
 import java.util.function.Consumer
 import java.util.function.Function
 
-class Queue(val id: String, val formattedName: String, val meta: QueueMeta, private val startGame: Consumer<Game>, private var matchmaker: Function<ArrayList<Player>, ArrayList<Game>>? = null) {
-    
+class Queue(
+    val id: String,
+    val formattedName: String,
+    val meta: QueueMeta,
+    private val startGame: Consumer<Game>,
+    private var matchmaker: Function<ArrayList<Player>, ArrayList<Game>>? = null,
+) {
+
     private val players = ArrayList<Player>()
 
     val size: Int
@@ -32,7 +38,7 @@ class Queue(val id: String, val formattedName: String, val meta: QueueMeta, priv
                 return@Function games
             }
         }
-        
+
         EventListener(PlayerQuitEvent::class.java) { event ->
             if (!players.contains(event.player)) return@EventListener
             this removePlayer event.player

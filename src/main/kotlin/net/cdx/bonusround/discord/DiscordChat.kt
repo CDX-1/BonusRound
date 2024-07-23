@@ -39,10 +39,12 @@ class DiscordChat : ListenerAdapter() {
         if (event.channel.id != conf().discordChatChannel) return
         if (event.author.isBot) return
         Bukkit.getServer().onlinePlayers.forEach { player ->
-            player.sendMessage(Formatter(lang().general.discordMinecraftFormat)
-                .usePrefix(false)
-                .placeholders(event.author.name, event.message.contentStripped)
-                .component())
+            player.sendMessage(
+                Formatter(lang().general.discordMinecraftFormat)
+                    .usePrefix(false)
+                    .placeholders(event.author.name, event.message.contentStripped)
+                    .component()
+            )
         }
     }
 
@@ -70,7 +72,11 @@ class DiscordChat : ListenerAdapter() {
                     WebhookMessageBuilder()
                         .setUsername(event.player.name)
                         .setAvatarUrl("https://mc-heads.net/avatar/${event.player.name}.png/")
-                        .setContent("**${event.player.name}:** ${Formatter.plain().serialize(event.originalMessage()).replace("@", "\\@")}")
+                        .setContent(
+                            "**${event.player.name}:** ${
+                                Formatter.plain().serialize(event.originalMessage()).replace("@", "\\@")
+                            }"
+                        )
                         .build()
                 )
             }
@@ -102,13 +108,26 @@ class DiscordChat : ListenerAdapter() {
 
                 webhook.send(
                     WebhookEmbedBuilder()
-                        .setAuthor(WebhookEmbed.EmbedAuthor("Server Performance Report", "https://i.ibb.co/SBZ4HtW/bonusround.png", ""))
+                        .setAuthor(
+                            WebhookEmbed.EmbedAuthor(
+                                "Server Performance Report",
+                                "https://i.ibb.co/SBZ4HtW/bonusround.png",
+                                ""
+                            )
+                        )
                         .setColor(0xDB2B39)
-                        .setDescription("""
-                            **RAM:** ${formatBytes(usedMemory)} / ${formatBytes(totalMemory)} (${String.format("%.2f", (usedMemory.toDouble() / totalMemory.toDouble()) * 100)}%)
+                        .setDescription(
+                            """
+                            **RAM:** ${formatBytes(usedMemory)} / ${formatBytes(totalMemory)} (${
+                                String.format(
+                                    "%.2f",
+                                    (usedMemory.toDouble() / totalMemory.toDouble()) * 100
+                                )
+                            }%)
                             **TPS:** ${String.format("%.2f", Bukkit.getServer().tps.first())}
                             **Players:** ${Bukkit.getServer().onlinePlayers.size}
-                        """.trimIndent())
+                        """.trimIndent()
+                        )
                         .setTimestamp(Instant.now())
                         .build()
                 )

@@ -16,6 +16,7 @@ import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitScheduler
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -75,7 +76,6 @@ class Formatter(private var message: String = "") : Cloneable {
         placeholders.addAll(values)
         return this
     }
-
 
 
     fun raw(): String {
@@ -141,6 +141,21 @@ fun days(): TimeUnit {
     return TimeUnit.DAYS
 }
 
+private const val TICKS_PER_SECOND = 20
+
+fun TimeUnit.toTicks(duration: Long): Long {
+    return when (this) {
+        TimeUnit.NANOSECONDS -> (duration * TICKS_PER_SECOND / 1_000_000_000.0).toLong()
+        TimeUnit.MICROSECONDS -> (duration * TICKS_PER_SECOND / 1_000_000.0).toLong()
+        TimeUnit.MILLISECONDS -> (duration * TICKS_PER_SECOND / 1_000.0).toLong()
+        TimeUnit.SECONDS -> duration * TICKS_PER_SECOND
+        TimeUnit.MINUTES -> duration * TICKS_PER_SECOND * 60
+        TimeUnit.HOURS -> duration * TICKS_PER_SECOND * 3600
+        TimeUnit.DAYS -> duration * TICKS_PER_SECOND * 86400
+        else -> throw IllegalArgumentException("Unsupported TimeUnit: $this")
+    }
+}
+
 fun formatBytes(bytes: Long): String {
     val kb = bytes / 1024
     val mb = kb / 1024
@@ -199,8 +214,13 @@ fun delayAsync(delayTime: Long, task: () -> Unit): Job {
     }
 }
 
+suspend fun <T> asyncTransaction(block: suspend () -> T): T =
+    withContext(Dispatchers.IO) {
+        newSuspendedTransaction { block() }
+    }
+
 fun doChance(chance: Double, task: () -> Unit) {
-    if(Random.nextDouble() < chance / 100) task()
+    if (Random.nextDouble() < chance / 100) task()
 }
 
 // SCHEDULER

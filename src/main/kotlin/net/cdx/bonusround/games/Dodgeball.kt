@@ -38,9 +38,11 @@ import kotlin.math.sin
 private lateinit var dodgeballArenaProvider: ArenaProvider
 private val inGame = HashMap<Player, Game>()
 private val dodgeball = ItemBuilder(Material.BOW)
-    .displayName(Formatter(lang().games.dodgeball.dodgeballItemName)
-        .usePrefix(false)
-        .component())
+    .displayName(
+        Formatter(lang().games.dodgeball.dodgeballItemName)
+            .usePrefix(false)
+            .component()
+    )
     .enchant(Enchantment.INFINITY, 1)
     .unbreakable(false, hide = true)
     .droppable(false)
@@ -49,16 +51,20 @@ private val dodgeballCharge = ItemBuilder(Material.ARROW)
     .displayName(Component.text(""))
     .droppable(false)
 private val dashItem = ItemBuilder(Material.STICK)
-    .displayName(Formatter(lang().games.dodgeball.dodgeballDashItemName)
-        .usePrefix(false)
-        .component())
+    .displayName(
+        Formatter(lang().games.dodgeball.dodgeballDashItemName)
+            .usePrefix(false)
+            .component()
+    )
     .unbreakable(true)
     .droppable(false)
     .customModelData(102)
 private val doubleJumpItem = ItemBuilder(Material.STRING)
-    .displayName(Formatter(lang().games.dodgeball.dodgeballDoubleJumpItemName)
-        .usePrefix(false)
-        .component())
+    .displayName(
+        Formatter(lang().games.dodgeball.dodgeballDoubleJumpItemName)
+            .usePrefix(false)
+            .component()
+    )
     .unbreakable(true)
     .droppable(false)
     .customModelData(101)
@@ -105,19 +111,30 @@ private val dodgeball1v1 = Consumer<Game> { game ->
 
                     val cloneLoc = hit.location.clone()
 
-                    attacker.sendMessage(Formatter(lang().games.dodgeball.attackerHit)
-                        .placeholders(hit.name)
-                        .component())
+                    attacker.sendMessage(
+                        Formatter(lang().games.dodgeball.attackerHit)
+                            .placeholders(hit.name)
+                            .component()
+                    )
 
-                    hit.sendMessage(Formatter(lang().games.dodgeball.victimHit)
-                        .placeholders(attacker.name)
-                        .component())
+                    hit.sendMessage(
+                        Formatter(lang().games.dodgeball.victimHit)
+                            .placeholders(attacker.name)
+                            .component()
+                    )
 
                     game.players.forEach { player ->
                         player.playSound(Sound.sound(Key.key("entity.ender_dragon.growl"), Sound.Source.MASTER, 1f, 1f))
                         Animations.createBlockWave(hit.location, 4)
                         val task = Scheduler.runTaskTimer(Main.instance, Runnable {
-                            player.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
+                            player.playSound(
+                                Sound.sound(
+                                    Key.key("entity.generic.explode"),
+                                    Sound.Source.MASTER,
+                                    1f,
+                                    1f
+                                )
+                            )
                             cloneLoc.world.spawnParticle(Particle.EXPLOSION, cloneLoc, 1, 0.0, 0.0, 0.0)
                         }, 20L, 2L)
                         delay(3000) {
@@ -127,6 +144,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
 
                     game.callEvent(GameEvent("end"))
                 }
+
                 "end" -> {
                     countdowns.forEach { it.cancel() }
                     countdowns.clear()
@@ -146,6 +164,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                         game.release(cancelJob = true)
                     }
                 }
+
                 "release" -> {
                     countdowns.forEach { it.cancel() }
                     inGame.clear()
@@ -157,6 +176,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                         player.gameMode = GameMode.ADVENTURE
                     }
                 }
+
                 "disconnect" -> {
                     val player = event.parameters["player"] as Player? ?: return@onEvent
                     game.release(cancelJob = true)
@@ -168,7 +188,13 @@ private val dodgeball1v1 = Consumer<Game> { game ->
 
         Main.instance.launch {
             withContext(Dispatchers.IO) {
-                arenaSearch.complete(ArenaService.awaitArena(dodgeballArenaProvider, seconds().toMillis(1), minutes().toMillis(2)))
+                arenaSearch.complete(
+                    ArenaService.awaitArena(
+                        dodgeballArenaProvider,
+                        seconds().toMillis(1),
+                        minutes().toMillis(2)
+                    )
+                )
             }
         }
 
@@ -181,9 +207,11 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         }
 
         arena.reserve()
-        game.broadcast(Formatter(lang().games.general.arenaFound)
-            .placeholders(arena.id)
-            .component())
+        game.broadcast(
+            Formatter(lang().games.general.arenaFound)
+                .placeholders(arena.id)
+                .component()
+        )
 
         sync {
 
@@ -240,7 +268,10 @@ class Dodgeball : Registrable {
             event.isCancelled = true
             val force = event.force
             val item = ItemStack(Material.PLAYER_HEAD)
-            val stand = player.world.spawnEntity(player.eyeLocation.subtract(Vector(0, 3, 0)), EntityType.ARMOR_STAND) as ArmorStand
+            val stand = player.world.spawnEntity(
+                player.eyeLocation.subtract(Vector(0, 3, 0)),
+                EntityType.ARMOR_STAND
+            ) as ArmorStand
             NBT.modifyPersistentData(stand) { nbt ->
                 nbt.setUUID("owner", player.uniqueId)
             }
@@ -265,7 +296,14 @@ class Dodgeball : Registrable {
             if (entity.world.name != "arenas") return@EventListener
             entity.world.spawnParticle(Particle.FIREWORK, entity.location, 5, 0.0, 0.0, 0.0, 0.0)
             doChance(20.0) {
-                event.entity.world.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 1f, 1f))
+                event.entity.world.playSound(
+                    Sound.sound(
+                        Key.key("entity.experience_orb.pickup"),
+                        Sound.Source.MASTER,
+                        1f,
+                        1f
+                    )
+                )
             }
             val uuid = NBT.getPersistentData<UUID>(entity) { nbt -> nbt.getUUID("owner") } ?: return@EventListener
             val nearby = entity.location.getNearbyPlayers(1.0)
@@ -275,10 +313,23 @@ class Dodgeball : Registrable {
                 delay(500) {
                     val owner = Bukkit.getPlayer(uuid) ?: return@delay
                     if (!owner.isOnline) return@delay
-                    inGame[player]?.callEvent(GameEvent("playerHit", hashMapOf(Pair("attacker", owner), Pair("hit", player))))
+                    inGame[player]?.callEvent(
+                        GameEvent(
+                            "playerHit",
+                            hashMapOf(Pair("attacker", owner), Pair("hit", player))
+                        )
+                    )
                 }
             }
-            val belowBlockType = event.entity.world.getBlockAt(event.entity.location.subtract(Vector(0.toDouble(), 0.25, 0.toDouble()))).type
+            val belowBlockType = event.entity.world.getBlockAt(
+                event.entity.location.subtract(
+                    Vector(
+                        0.toDouble(),
+                        0.25,
+                        0.toDouble()
+                    )
+                )
+            ).type
             if (belowBlockType == Material.AIR || belowBlockType == Material.BARRIER || belowBlockType == Material.LIGHT) return@EventListener
             event.entity.world.spawnParticle(Particle.EXPLOSION, event.entity.location, 3)
             event.entity.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
@@ -315,10 +366,12 @@ class Dodgeball : Registrable {
                 "dodgeball_1v1",
                 "Dodgeball 1v1"
             )
-                .setMeta(QueueMeta(
-                    2,
-                    2
-                ))
+                .setMeta(
+                    QueueMeta(
+                        2,
+                        2
+                    )
+                )
                 .setGameInit(dodgeball1v1)
                 .build()
         )

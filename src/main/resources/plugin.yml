@@ -16,3 +16,4 @@ soft depend:
 libraries:
   - net.dv8tion:JDA:5.0.1
   - club.minnced:discord-webhooks:0.8.4
+  - org.ktorm:ktorm-core:4.1.0

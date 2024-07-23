@@ -43,7 +43,13 @@ class Animations {
         fun createBlockWave(origin: Location, radius: Int) {
             val random = Random()
             val fallingBlocks = mutableSetOf<FallingBlock>()
-            val dontAddList = mutableSetOf(Material.AIR, Material.PLAYER_HEAD, Material.CREEPER_HEAD, Material.BEDROCK, Material.BARRIER)
+            val dontAddList = mutableSetOf(
+                Material.AIR,
+                Material.PLAYER_HEAD,
+                Material.CREEPER_HEAD,
+                Material.BEDROCK,
+                Material.BARRIER
+            )
 
             val surroundingBlocks = mutableListOf<Block>()
             for (x in -radius..radius) {
