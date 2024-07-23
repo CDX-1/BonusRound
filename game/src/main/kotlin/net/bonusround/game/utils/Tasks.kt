@@ -38,14 +38,14 @@ fun suspendingAsync(task: suspend () -> Unit): Job {
     }
 }
 
-fun delay(delayTime: Long, task: () -> Unit): Job {
+fun delayed(delayTime: Long, task: () -> Unit): Job {
     return Main.instance.launch {
         kotlinx.coroutines.delay(delayTime)
         task()
     }
 }
 
-fun delayAsync(delayTime: Long, task: () -> Unit): Job {
+fun delayedAsync(delayTime: Long, task: () -> Unit): Job {
     return Main.instance.launch {
         withContext(Dispatchers.IO) {
             kotlinx.coroutines.delay(delayTime)
