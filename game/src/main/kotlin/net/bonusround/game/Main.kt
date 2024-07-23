@@ -5,23 +5,25 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
+import net.bonusround.api.BonusRoundAPI
 import net.bonusround.game.commands.DiscordCommand
 import net.bonusround.game.commands.HelpCommand
 import net.bonusround.game.commands.QueueCommand
-import net.bonusround.game.config.Config
-import net.bonusround.game.config.ConfigLoader
-import net.bonusround.game.config.Lang
-import net.bonusround.game.config.Overrides
+import net.bonusround.game.configs.Config
+import net.bonusround.api.config.ConfigLoader
+import net.bonusround.game.configs.Lang
+import net.bonusround.game.configs.Overrides
 import net.bonusround.game.data.DataManager
 import net.bonusround.game.discord.Bot
 import net.bonusround.game.discord.bot
 import net.bonusround.game.discord.serverStopped
 import net.bonusround.game.extensions.dataProvider
 import net.bonusround.game.games.Dodgeball
-import net.bonusround.game.games.api.QueueManager
+import net.bonusround.api.game.QueueManager
+import net.bonusround.api.utils.Formatter
+import net.bonusround.game.configs.lang
 import net.bonusround.game.generic.AppearanceEvents
 import net.bonusround.game.generic.ItemEvents
-import net.bonusround.game.gui.GuiRegistry
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
@@ -33,7 +35,6 @@ class Main : SuspendingJavaPlugin() {
     companion object {
         lateinit var instance: Main
         lateinit var logger: Logger
-        lateinit var guiRegistry: GuiRegistry
 
         lateinit var conf: Config
         lateinit var lang: Lang
@@ -57,9 +58,10 @@ class Main : SuspendingJavaPlugin() {
 
         // INIT
 
+        BonusRoundAPI.main = this
+
         instance = this
         Companion.logger = logger
-        guiRegistry = GuiRegistry()
 
         // PACKET EVENTS
 
@@ -73,6 +75,8 @@ class Main : SuspendingJavaPlugin() {
         lang = langLoader.load()
         overridesLoader = ConfigLoader("overrides.conf", Overrides::class)
         overrides = overridesLoader.load()
+
+        Formatter.prefix = lang().general.prefix
 
         // DATABASE
 

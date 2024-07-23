@@ -1,10 +1,11 @@
 package net.bonusround.game.generic
 
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.bonusround.game.EventListener
-import net.bonusround.game.utils.Registrable
-import net.bonusround.game.config.lang
-import net.bonusround.game.utils.Formatter
+import net.bonusround.api.utils.EventListener
+import net.bonusround.api.utils.Registrable
+import net.bonusround.api.utils.Formatter
+import net.bonusround.api.commands.BonusRoundCommandList
+import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
@@ -105,7 +106,7 @@ class AppearanceEvents : Registrable {
         EventListener(PlayerCommandSendEvent::class.java) { event ->
             if (event.player.isOp) return@EventListener
             event.commands.removeIf { commandName ->
-                if (net.bonusround.game.BonusRoundCommandList.contains(commandName)) return@removeIf false
+                if (BonusRoundCommandList.contains(commandName)) return@removeIf false
                 val command = Bukkit.getServer().commandMap.getCommand(commandName) ?: return@removeIf false
                 if (command.permission == null) {
                     true
@@ -132,8 +133,8 @@ class AppearanceEvents : Registrable {
                 )
                 return@EventListener
             }
-            if (net.bonusround.game.BonusRoundCommandList.contains(command.name)) {
-                if (!event.player.hasPermission(net.bonusround.game.BonusRoundCommandList[command.name]!!.permission!!)) {
+            if (BonusRoundCommandList.contains(command.name)) {
+                if (!event.player.hasPermission(BonusRoundCommandList[command.name]!!.permission!!)) {
                     event.isCancelled = true
                     event.player.sendMessage(
                         Formatter(lang().general.unknownCommand).component()

@@ -7,14 +7,14 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import net.bonusround.game.EventListener
+import net.bonusround.api.utils.EventListener
 import net.bonusround.game.Main
-import net.bonusround.game.utils.Registrable
-import net.bonusround.game.config.lang
-import net.bonusround.game.games.api.*
-import net.bonusround.game.games.api.GameEvent
-import net.bonusround.game.utils.*
-import net.bonusround.game.utils.Formatter
+import net.bonusround.api.game.*
+import net.bonusround.api.utils.Registrable
+import net.bonusround.api.game.GameEvent
+import net.bonusround.api.utils.*
+import net.bonusround.api.utils.Formatter
+import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
@@ -160,7 +160,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     }
 
                     hasEnded = true
-                    game.broadcast(lang().games.general.gameOverTitle)
+                    // game.broadcast(lang().games.general.gameOverTitle) // TODO Reimplement formatter titles
 
                     delayed(5000) {
                         game.release(cancelJob = true)

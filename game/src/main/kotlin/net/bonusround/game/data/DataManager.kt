@@ -1,8 +1,8 @@
 package net.bonusround.game.data
 
 import net.bonusround.game.Main
-import net.bonusround.game.utils.Registrable
-import net.bonusround.game.config.conf
+import net.bonusround.api.utils.Registrable
+import net.bonusround.game.configs.conf
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 

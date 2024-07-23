@@ -1,13 +1,13 @@
 package net.bonusround.game.commands
 
 import dev.jorel.commandapi.executors.CommandArguments
-import net.bonusround.game.Command
-import net.bonusround.game.config.lang
-import net.bonusround.game.utils.Formatter
+import net.bonusround.api.commands.Command
+import net.bonusround.api.utils.Formatter
+import net.bonusround.game.configs.lang
 import org.apache.logging.log4j.util.BiConsumer
 import org.bukkit.entity.Player
 
-class DiscordCommand : net.bonusround.game.Command(
+class DiscordCommand : Command(
     name = "discord",
     shortDescription = "Interact with our Discord server",
     fullDescription = "Get a link to our Discord server or manage your account syncing",

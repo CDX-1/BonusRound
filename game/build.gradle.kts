@@ -8,12 +8,14 @@ plugins {
     alias(libs.plugins.runpaper)
 }
 
-group = "net.cdx"
+group = "net.bonusround"
 version = "1.0.0"
 
 apply(from = "../repositories.gradle")
 
 dependencies {
+    implementation(project(":api"))
+
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 
     implementation(libs.bundles.kotlin)

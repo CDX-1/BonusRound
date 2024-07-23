@@ -2,8 +2,8 @@ package net.bonusround.game.generic
 
 import io.papermc.paper.chat.ChatRenderer
 import me.clip.placeholderapi.PlaceholderAPI
-import net.bonusround.game.config.lang
-import net.bonusround.game.utils.Formatter
+import net.bonusround.api.utils.Formatter
+import net.bonusround.game.configs.lang
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor

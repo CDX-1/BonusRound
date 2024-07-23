@@ -6,13 +6,12 @@ import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.bonusround.game.EventListener
+import net.bonusround.api.utils.EventListener
 import net.bonusround.game.Main
-import net.bonusround.game.config.conf
-import net.bonusround.game.config.lang
-import net.bonusround.game.utils.Formatter
-import net.bonusround.game.utils.Scheduler
-import net.bonusround.game.utils.formatBytes
+import net.bonusround.game.configs.conf
+import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.formatBytes
+import net.bonusround.game.configs.lang
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.bukkit.Bukkit
@@ -101,7 +100,7 @@ class DiscordChat : ListenerAdapter() {
                 )
             }
 
-            Scheduler.scheduleSyncRepeatingTask(Main.instance, {
+            Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.instance, {
                 val freeMemory = Runtime.getRuntime().freeMemory()
                 val totalMemory = Runtime.getRuntime().totalMemory()
                 val usedMemory = totalMemory - freeMemory

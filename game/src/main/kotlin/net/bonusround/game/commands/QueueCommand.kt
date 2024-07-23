@@ -2,16 +2,16 @@ package net.bonusround.game.commands
 
 import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
-import net.bonusround.game.Command
-import net.bonusround.game.config.lang
-import net.bonusround.game.games.api.QueueManager
-import net.bonusround.game.utils.Formatter
+import net.bonusround.api.commands.Command
+import net.bonusround.api.game.QueueManager
+import net.bonusround.api.utils.Formatter
+import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.apache.logging.log4j.util.BiConsumer
 import org.bukkit.entity.Player
 
-class QueueCommand : net.bonusround.game.Command(
+class QueueCommand : Command(
     name = "queue",
     shortDescription = "Join the game queue",
     fullDescription = "Join the the matchmaking queue for the game and format of your choice",
@@ -28,7 +28,7 @@ class QueueCommand : net.bonusround.game.Command(
     }
 }
 
-class QueueDodgeballSubCommand : net.bonusround.game.Command(
+class QueueDodgeballSubCommand : Command(
     name = "dodgeball",
     shortDescription = "Join the dodgeball queue",
     fullDescription = "Join the dodgeball matchmaking queue in the format of your choice",
@@ -71,7 +71,7 @@ class QueueDodgeballSubCommand : net.bonusround.game.Command(
     }
 }
 
-class QueueLeaveSubCommand : net.bonusround.game.Command(
+class QueueLeaveSubCommand : Command(
     "leave",
     shortDescription = "Leave your current queue",
     fullDescription = "Remove yourself from the matchmaking of your current queue",
