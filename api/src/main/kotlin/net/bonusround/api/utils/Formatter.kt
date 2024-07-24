@@ -190,3 +190,23 @@ fun Component.toGson(): String {
 fun Component.toPlain(): String {
     return plainSerializer.serialize(this)
 }
+
+infix fun String.send(player: Player) {
+    player.sendMessage(this)
+}
+
+infix fun Component.send(player: Player) {
+    player.sendMessage(this)
+}
+
+fun String.send(vararg players: Player) {
+    players.forEach { player ->
+        player.sendMessage(this)
+    }
+}
+
+fun Component.send(vararg players: Player) {
+    players.forEach { player ->
+        player.sendMessage(this)
+    }
+}
