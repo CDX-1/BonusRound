@@ -40,7 +40,10 @@ class DataManager(
         DataContainerService.validateTables()
     }
 
-    fun <ID : Comparable<ID>, E : Entity<ID>, T : IdTable<ID>, C : DataContainer<ID, E, T>> registerTable(table: T, container: KClass<C>): DataManager {
+    fun <ID : Comparable<ID>, E : Entity<ID>, T : IdTable<ID>, C : DataContainer<ID, E, T>> registerTable(
+        table: T,
+        container: KClass<C>,
+    ): DataManager {
         DataContainerService.addTable(table, container)
         return this
     }
