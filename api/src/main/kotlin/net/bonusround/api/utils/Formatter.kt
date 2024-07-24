@@ -210,15 +210,15 @@ fun String.send(player: Player? = null) {
     }
 }
 
-infix fun String.sendAsComponent(player: Player) {
+infix fun String.sendComponent(player: Player) {
     this.component().send(player)
 }
 
-fun String.sendAsComponent(vararg players: Player) {
+fun String.sendComponent(vararg players: Player) {
     this.component().send(*players)
 }
 
-fun String.sendAsComponent(player: Player? = null) {
+fun String.sendComponent(player: Player? = null) {
     this.component().send(player)
 }
 
