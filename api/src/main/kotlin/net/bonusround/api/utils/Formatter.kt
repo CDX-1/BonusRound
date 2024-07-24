@@ -121,7 +121,12 @@ class Formatter(private var message: String = "") : Cloneable {
 
 // FORMATTER EXTENSION FUNCTIONS
 
-fun String.component(usePrefix: Boolean = true, usePAPI: Boolean = false, papiPlayer: Player? = null, vararg values: String): Component {
+fun String.component(
+    usePrefix: Boolean = true,
+    usePAPI: Boolean = false,
+    papiPlayer: Player? = null,
+    vararg values: String,
+): Component {
     val formatter = Formatter(this)
         .usePrefix(usePrefix)
         .placeholders(*values)
@@ -134,7 +139,12 @@ fun String.component(usePrefix: Boolean = true, usePAPI: Boolean = false, papiPl
     return formatter.component()
 }
 
-fun String.fromLegacy(usePrefix: Boolean = true, usePAPI: Boolean = false, papiPlayer: Player? = null, vararg values: String): Component {
+fun String.fromLegacy(
+    usePrefix: Boolean = true,
+    usePAPI: Boolean = false,
+    papiPlayer: Player? = null,
+    vararg values: String,
+): Component {
     val formatter = Formatter(this)
         .usePrefix(usePrefix)
         .placeholders(*values)
@@ -147,7 +157,12 @@ fun String.fromLegacy(usePrefix: Boolean = true, usePAPI: Boolean = false, papiP
     return formatter.legacyToComponent()
 }
 
-fun String.fromGson(usePrefix: Boolean = true, usePAPI: Boolean = false, papiPlayer: Player? = null, vararg values: String): Component {
+fun String.fromGson(
+    usePrefix: Boolean = true,
+    usePAPI: Boolean = false,
+    papiPlayer: Player? = null,
+    vararg values: String,
+): Component {
     val formatter = Formatter(this)
         .usePrefix(usePrefix)
         .placeholders(*values)
