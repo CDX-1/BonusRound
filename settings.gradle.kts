@@ -12,4 +12,3 @@ plugins {
 rootProject.name = "BonusRound"
 include("game")
 include("api")
-include("api")
