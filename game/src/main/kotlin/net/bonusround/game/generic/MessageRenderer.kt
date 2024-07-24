@@ -2,7 +2,7 @@ package net.bonusround.game.generic
 
 import io.papermc.paper.chat.ChatRenderer
 import me.clip.placeholderapi.PlaceholderAPI
-import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.component
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
@@ -17,12 +17,12 @@ private fun convertHex(input: String): String {
 
 class MessageRenderer : ChatRenderer {
     override fun render(source: Player, sourceDisplayName: Component, message: Component, viewer: Audience): Component {
-        return Formatter(lang().general.chatFormat)
-            .usePrefix(false)
-            .usePAPI(true, source)
-            .placeholders(convertHex(PlaceholderAPI.setPlaceholders(source, "%luckperms_prefix%")))
-            .component()
-            .append(message.color(TextColor.color(170, 170, 170)))
+        return lang().general.chatFormat.component(
+            usePrefix = false,
+            usePAPI = true,
+            papiPlayer = source,
+            values = arrayOf(convertHex(PlaceholderAPI.setPlaceholders(source, "%luckperms_prefix%")))
+        ).append(message.color(TextColor.color(170, 170, 170)))
     }
 
 }

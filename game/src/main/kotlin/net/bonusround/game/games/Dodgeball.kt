@@ -11,7 +11,6 @@ import net.bonusround.api.game.*
 import net.bonusround.api.game.GameEvent
 import net.bonusround.api.utils.*
 import net.bonusround.api.utils.EventListener
-import net.bonusround.api.utils.Formatter
 import net.bonusround.game.Main
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
@@ -39,9 +38,7 @@ private lateinit var dodgeballArenaProvider: ArenaProvider
 private val inGame = HashMap<Player, Game>()
 private val dodgeball = ItemBuilder(Material.BOW)
     .displayName(
-        Formatter(lang().games.dodgeball.dodgeballItemName)
-            .usePrefix(false)
-            .component()
+        lang().games.dodgeball.dodgeballItemName.component(usePrefix = false)
     )
     .enchant(Enchantment.INFINITY, 1)
     .unbreakable(false, hide = true)
@@ -52,18 +49,14 @@ private val dodgeballCharge = ItemBuilder(Material.ARROW)
     .droppable(false)
 private val dashItem = ItemBuilder(Material.STICK)
     .displayName(
-        Formatter(lang().games.dodgeball.dodgeballDashItemName)
-            .usePrefix(false)
-            .component()
+        lang().games.dodgeball.dodgeballDashItemName.component(usePrefix = false)
     )
     .unbreakable(true)
     .droppable(false)
     .customModelData(102)
 private val doubleJumpItem = ItemBuilder(Material.STRING)
     .displayName(
-        Formatter(lang().games.dodgeball.dodgeballDoubleJumpItemName)
-            .usePrefix(false)
-            .component()
+        lang().games.dodgeball.dodgeballDoubleJumpItemName.component(usePrefix = false)
     )
     .unbreakable(true)
     .droppable(false)
@@ -112,15 +105,11 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     val cloneLoc = hit.location.clone()
 
                     attacker.sendMessage(
-                        Formatter(lang().games.dodgeball.attackerHit)
-                            .placeholders(hit.name)
-                            .component()
+                        lang().games.dodgeball.attackerHit.component(values = arrayOf(hit.name))
                     )
 
                     hit.sendMessage(
-                        Formatter(lang().games.dodgeball.victimHit)
-                            .placeholders(attacker.name)
-                            .component()
+                        lang().games.dodgeball.victimHit.component(values = arrayOf(attacker.name))
                     )
 
                     game.players.forEach { player ->
@@ -185,7 +174,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
             }
         }
 
-        game.broadcast(Formatter(lang().games.general.searchingForArena).component())
+        game.broadcast(lang().games.general.searchingForArena.component())
 
         Main.instance.launch {
             withContext(Dispatchers.IO) {
@@ -202,16 +191,14 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         arena = arenaSearch.await()
 
         if (arena == null) {
-            game.broadcast(Formatter(lang().games.general.arenaSearchTimeout).component())
+            game.broadcast(lang().games.general.arenaSearchTimeout.component())
             game.release(cancelJob = true)
             return@suspendingAsync
         }
 
         arena.reserve()
         game.broadcast(
-            Formatter(lang().games.general.arenaFound)
-                .placeholders(arena.id)
-                .component()
+            lang().games.general.arenaFound.component(values = arrayOf(arena.id))
         )
 
         sync {
@@ -240,7 +227,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
 
             delayed(seconds().toMillis(90)) {
                 if (hasEnded) return@delayed
-                game.broadcast(Formatter(lang().games.general.gameTimeout).component())
+                game.broadcast(lang().games.general.gameTimeout.component())
                 game.callEvent(GameEvent("end"))
             }
 

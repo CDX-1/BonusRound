@@ -3,8 +3,9 @@ package net.bonusround.game.generic
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.bonusround.api.commands.BonusRoundCommandList
 import net.bonusround.api.utils.EventListener
-import net.bonusround.api.utils.Formatter
 import net.bonusround.api.utils.Registrable
+import net.bonusround.api.utils.component
+import net.bonusround.api.utils.sendComponent
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -40,17 +41,11 @@ class AppearanceEvents : Registrable {
 
             if (player.hasPlayedBefore()) {
                 event.joinMessage(
-                    Formatter(lang().general.join)
-                        .usePrefix(false)
-                        .usePAPI(true, player)
-                        .component()
+                    lang().general.join.component(usePrefix = false, usePAPI = true, papiPlayer = player)
                 )
             } else {
                 event.joinMessage(
-                    Formatter(lang().general.joinUnique)
-                        .usePrefix(false)
-                        .usePAPI(true, player)
-                        .component()
+                    lang().general.joinUnique.component(usePrefix = false, usePAPI = true, papiPlayer = player)
                 )
             }
 
@@ -64,10 +59,7 @@ class AppearanceEvents : Registrable {
 
         EventListener(PlayerQuitEvent::class.java) { event ->
             event.quitMessage(
-                Formatter(lang().general.quit)
-                    .usePrefix(false)
-                    .usePAPI(true, event.player)
-                    .component()
+                lang().general.quit.component(usePrefix = false, usePAPI = true, papiPlayer = event.player)
             )
             event.player.setCollisions(true)
         }
@@ -120,25 +112,19 @@ class AppearanceEvents : Registrable {
             val commandName = event.message.split(" ").first().removePrefix("/")
             if (commandName.contains(":")) {
                 event.isCancelled = true
-                event.player.sendMessage(
-                    Formatter(lang().general.unknownCommand).component()
-                )
+                lang().general.unknownCommand sendComponent event.player
                 return@EventListener
             }
             val command = Bukkit.getServer().commandMap.getCommand(commandName)
             if (command == null) {
                 event.isCancelled = true
-                event.player.sendMessage(
-                    Formatter(lang().general.unknownCommand).component()
-                )
+                lang().general.unknownCommand sendComponent event.player
                 return@EventListener
             }
             if (BonusRoundCommandList.contains(command.name)) {
                 if (!event.player.hasPermission(BonusRoundCommandList[command.name]!!.permission!!)) {
                     event.isCancelled = true
-                    event.player.sendMessage(
-                        Formatter(lang().general.unknownCommand).component()
-                    )
+                    lang().general.unknownCommand sendComponent event.player
                 }
             } else {
                 if (command.permission == null) {
@@ -146,9 +132,7 @@ class AppearanceEvents : Registrable {
                 }
                 if (!event.player.hasPermission(command.permission!!)) {
                     event.isCancelled = true
-                    event.player.sendMessage(
-                        Formatter(lang().general.unknownCommand).component()
-                    )
+                    lang().general.unknownCommand sendComponent event.player
                 }
             }
         }

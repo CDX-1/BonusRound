@@ -4,7 +4,9 @@ import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import net.bonusround.api.commands.Command
 import net.bonusround.api.game.QueueManager
-import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.component
+import net.bonusround.api.utils.send
+import net.bonusround.api.utils.sendComponent
 import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
@@ -23,7 +25,7 @@ class QueueCommand : Command(
     aliases = arrayOf("q", "match", "matchmaking", "mm"),
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
-        player.sendMessage(Formatter(lang().commands.queue.noSubCommands).component())
+        lang().commands.queue.noSubCommands sendComponent player
         player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
     }
 }
@@ -39,7 +41,7 @@ class QueueDodgeballSubCommand : Command(
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, args ->
         if (QueueManager isInQueue player) {
-            player.sendMessage(Formatter(lang().commands.queue.mustLeaveQueue).component())
+            lang().commands.queue.mustLeaveQueue sendComponent player
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
             return@BiConsumer
         }
@@ -55,17 +57,10 @@ class QueueDodgeballSubCommand : Command(
         val success = queue!!.addPlayer(player)
 
         if (success) {
-            player.sendMessage(
-                Formatter(lang().commands.queue.joinedQueue)
-                    .placeholders("Dodgeball $formatId")
-                    .component()
-            )
+            lang().commands.queue.joinedQueue.component(values = arrayOf("Dodgeball $formatId")) send player
             player.playSound(Sound.sound(Key.key("entity.experience_orb.pickup"), Sound.Source.MASTER, 2f, 1f))
         } else {
-            player.sendMessage(
-                Formatter(lang().commands.queue.inGame)
-                    .component()
-            )
+            lang().commands.queue.inGame sendComponent player
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
         }
     }
@@ -79,14 +74,14 @@ class QueueLeaveSubCommand : Command(
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
         if (!(QueueManager isInQueue player)) {
-            player.sendMessage(Formatter(lang().commands.queue.notInQueue).component())
+            lang().commands.queue.notInQueue sendComponent player
             player.playSound(Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 2f, 1f))
             return@BiConsumer
         }
         val queue = QueueManager getQueueOf player
         if (queue != null) {
             queue removePlayer player
-            player.sendMessage(Formatter(lang().commands.queue.leftQueue).component())
+            lang().commands.queue.leftQueue sendComponent player
             player.playSound(Sound.sound(Key.key("entity.enderman.teleport"), Sound.Source.MASTER, 2f, 1f))
         }
     }

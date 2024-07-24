@@ -2,7 +2,7 @@ package net.bonusround.game.commands
 
 import dev.jorel.commandapi.executors.CommandArguments
 import net.bonusround.api.commands.Command
-import net.bonusround.api.utils.Formatter
+import net.bonusround.api.utils.sendComponent
 import net.bonusround.game.configs.lang
 import org.apache.logging.log4j.util.BiConsumer
 import org.bukkit.entity.Player
@@ -16,6 +16,6 @@ class DiscordCommand : Command(
     aliases = arrayOf("d", "dis")
 ) {
     override var onPlayer: BiConsumer<Player, CommandArguments>? = BiConsumer { player, _ ->
-        player.sendMessage(Formatter(lang().commands.discord.serverInvite).component())
+        lang().commands.discord.serverInvite sendComponent player
     }
 }

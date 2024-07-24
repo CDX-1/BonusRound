@@ -6,9 +6,7 @@ import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import io.papermc.paper.event.player.AsyncChatEvent
-import net.bonusround.api.utils.EventListener
-import net.bonusround.api.utils.Formatter
-import net.bonusround.api.utils.formatBytes
+import net.bonusround.api.utils.*
 import net.bonusround.game.Main
 import net.bonusround.game.configs.conf
 import net.bonusround.game.configs.lang
@@ -38,12 +36,10 @@ class DiscordChat : ListenerAdapter() {
         if (event.channel.id != conf().discordChatChannel) return
         if (event.author.isBot) return
         Bukkit.getServer().onlinePlayers.forEach { player ->
-            player.sendMessage(
-                Formatter(lang().general.discordMinecraftFormat)
-                    .usePrefix(false)
-                    .placeholders(event.author.name, event.message.contentStripped)
-                    .component()
-            )
+            lang().general.discordMinecraftFormat.component(
+                usePrefix = false,
+                values = arrayOf(event.author.name, event.message.contentStripped)
+            ).send()
         }
     }
 
