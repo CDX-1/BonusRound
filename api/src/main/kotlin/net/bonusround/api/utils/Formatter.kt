@@ -196,8 +196,10 @@ infix fun String.send(player: Player) {
     player.sendMessage(this)
 }
 
-infix fun Component.send(player: Player) {
-    player.sendMessage(this)
+fun String.send(vararg players: Player) {
+    players.forEach { player ->
+        player.sendMessage(this)
+    }
 }
 
 fun String.send(player: Player? = null) {
@@ -208,22 +210,32 @@ fun String.send(player: Player? = null) {
     }
 }
 
-fun Component.send(player: Player? = null) {
-    player?.let {
-        player.sendMessage(this)
-    } ?: run {
-        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
-    }
+infix fun String.sendAsComponent(player: Player) {
+    this.component().send(player)
 }
 
-fun String.send(vararg players: Player) {
-    players.forEach { player ->
-        player.sendMessage(this)
-    }
+fun String.sendAsComponent(vararg players: Player) {
+    this.component().send(*players)
+}
+
+fun String.sendAsComponent(player: Player? = null) {
+    this.component().send(player)
+}
+
+infix fun Component.send(player: Player) {
+    player.sendMessage(this)
 }
 
 fun Component.send(vararg players: Player) {
     players.forEach { player ->
         player.sendMessage(this)
+    }
+}
+
+fun Component.send(player: Player? = null) {
+    player?.let {
+        player.sendMessage(this)
+    } ?: run {
+        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
     }
 }
