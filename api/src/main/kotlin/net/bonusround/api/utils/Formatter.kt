@@ -9,6 +9,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 private val miniMessageSerializer = MiniMessage.miniMessage()
@@ -197,6 +198,22 @@ infix fun String.send(player: Player) {
 
 infix fun Component.send(player: Player) {
     player.sendMessage(this)
+}
+
+fun String.send(player: Player? = null) {
+    player?.let {
+        player.sendMessage(this)
+    } ?: run {
+        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
+    }
+}
+
+fun Component.send(player: Player? = null) {
+    player?.let {
+        player.sendMessage(this)
+    } ?: run {
+        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
+    }
 }
 
 fun String.send(vararg players: Player) {
