@@ -6,13 +6,13 @@ import net.bonusround.game.data.tables.PlayerDataTable
 import java.util.*
 
 data class PlayerDataContainer(
-    val id: UUID,
+    val uuid: UUID,
     var bits: Int = 0,
     var firstSeen: Long = 0,
     var lastSeen: Long = 0,
     var firstQuit: Long = 0,
     var lastQuit: Long = 0,
-) : DataContainer<UUID, PlayerDataEntity, PlayerDataTable>() {
+) : DataContainer<Int, PlayerDataEntity, PlayerDataTable>() {
     override fun getTable(): PlayerDataTable {
         return PlayerDataTable
     }

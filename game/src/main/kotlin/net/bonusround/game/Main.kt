@@ -17,7 +17,9 @@ import net.bonusround.game.configs.Config
 import net.bonusround.game.configs.Lang
 import net.bonusround.game.configs.Overrides
 import net.bonusround.game.configs.lang
+import net.bonusround.game.data.containers.DodgeballRatingContainer
 import net.bonusround.game.data.containers.PlayerDataContainer
+import net.bonusround.game.data.tables.DodgeballRatingTable
 import net.bonusround.game.data.tables.PlayerDataTable
 import net.bonusround.game.discord.Bot
 import net.bonusround.game.discord.bot
@@ -90,9 +92,8 @@ class Main : SuspendingJavaPlugin() {
             conf.pass
         )
             .registerTable(PlayerDataTable, PlayerDataContainer::class)
+            .registerTable(DodgeballRatingTable, DodgeballRatingContainer::class)
             .register()
-
-        PlayerDataTable.init()
 
         // DISCORD
 
@@ -128,7 +129,7 @@ class Main : SuspendingJavaPlugin() {
             command?.let {
                 it.permission = "override"
             } ?: run {
-                logger.info("Command: ${commandPermissionOverride} does not exist in command map!")
+                logger.info("Command: $commandPermissionOverride does not exist in command map!")
             }
         }
     }
@@ -164,12 +165,18 @@ class Main : SuspendingJavaPlugin() {
             )
         }
 
-        placeholderResolvers["top_rating"] = Function { _ ->
-            return@Function "0"
+        placeholderResolvers["top_rating"] = Function { player ->
+            return@Function player.dataProvider.dodgeballRatings?.let { ratings ->
+                ratings[Dodgeball.Format.`1v1`]?.wins?.toString() ?: "0"
+            } ?: "0"
         }
 
         placeholderResolvers["bits"] = Function { player ->
             return@Function player.dataProvider.playerData?.bits?.toString() ?: "0"
+        }
+
+        placeholderResolvers["in_queue"] = Function { player ->
+            return@Function ((QueueManager getQueueOf player) != null).toString()
         }
     }
 

@@ -53,7 +53,10 @@ fun delayedAsync(delayTime: Long, task: () -> Unit): Job {
 
 suspend fun <T> asyncTransaction(block: suspend () -> T): T =
     withContext(Dispatchers.IO) {
-        newSuspendedTransaction { block() }
+        newSuspendedTransaction {
+            queryTimeout = 30000
+            block()
+        }
     }
 
 fun launch(task: suspend CoroutineScope.() -> Unit) {

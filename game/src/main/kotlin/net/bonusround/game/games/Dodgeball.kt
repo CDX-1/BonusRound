@@ -365,4 +365,10 @@ class Dodgeball : Registrable {
         )
 
     }
+
+    @Suppress("UNUSED")
+    enum class Format(val format: String) {
+        `1v1`("1v1"),
+        `2v2`("2v2")
+    }
 }
