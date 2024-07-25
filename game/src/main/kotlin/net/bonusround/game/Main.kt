@@ -92,6 +92,8 @@ class Main : SuspendingJavaPlugin() {
             .registerTable(PlayerDataTable, PlayerDataContainer::class)
             .register()
 
+        PlayerDataTable.init()
+
         // DISCORD
 
         Bot().register()
@@ -123,7 +125,11 @@ class Main : SuspendingJavaPlugin() {
 
         overrides.commandPermissionOverrides.forEach { commandPermissionOverride ->
             val command = server.commandMap.getCommand(commandPermissionOverride)
-            command?.permission = "override"
+            command?.let {
+                it.permission = "override"
+            } ?: run {
+                logger.info("Command: ${commandPermissionOverride} does not exist in command map!")
+            }
         }
     }
 
