@@ -15,9 +15,7 @@ import org.jetbrains.exposed.sql.upsert
 import java.util.*
 
 object PlayerDataTable : UUIDTable(createTableName("player_data")) {
-
-    init {
-
+    fun init() {
         EventListener(PlayerJoinEvent::class.java) { event ->
             Main.instance.launch {
                 val playerData = asyncTransaction {
@@ -56,7 +54,6 @@ object PlayerDataTable : UUIDTable(createTableName("player_data")) {
                 }
             }
         }
-
     }
 
     val bits = integer("bits")

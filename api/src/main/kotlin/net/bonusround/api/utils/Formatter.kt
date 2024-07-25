@@ -196,46 +196,38 @@ infix fun String.send(player: Player) {
     player.sendMessage(this)
 }
 
-fun String.send(vararg players: Player) {
+fun String.sendList(vararg players: Player) {
     players.forEach { player ->
         player.sendMessage(this)
     }
 }
 
-fun String.send(player: Player? = null) {
-    player?.let {
-        player.sendMessage(this)
-    } ?: run {
-        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
-    }
+fun String.sendAll() {
+    this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
 }
 
 infix fun String.sendComponent(player: Player) {
     this.component().send(player)
 }
 
-fun String.sendComponent(vararg players: Player) {
-    this.component().send(*players)
+fun String.sendComponentList(vararg players: Player) {
+    this.component().sendList(*players)
 }
 
-fun String.sendComponent(player: Player? = null) {
-    this.component().send(player)
+fun String.sendComponentAll() {
+    this.component().sendAll()
 }
 
 infix fun Component.send(player: Player) {
     player.sendMessage(this)
 }
 
-fun Component.send(vararg players: Player) {
+fun Component.sendList(vararg players: Player) {
     players.forEach { player ->
         player.sendMessage(this)
     }
 }
 
-fun Component.send(player: Player? = null) {
-    player?.let {
-        player.sendMessage(this)
-    } ?: run {
-        this.send(*Bukkit.getServer().onlinePlayers.toTypedArray())
-    }
+fun Component.sendAll() {
+    this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
 }
