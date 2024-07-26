@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
+import me.clip.placeholderapi.PlaceholderAPI
 import net.bonusround.api.BonusRoundAPI
 import net.bonusround.api.config.ConfigLoader
 import net.bonusround.api.data.DataManager
@@ -29,6 +30,7 @@ import net.bonusround.game.games.Dodgeball
 import net.bonusround.game.generic.AppearanceEvents
 import net.bonusround.game.generic.ItemEvents
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 import java.util.function.Function
@@ -121,6 +123,7 @@ class Main : SuspendingJavaPlugin() {
 
         registerPlaceholders()
         PAPIExtension().register()
+        DataPAPI().register()
 
         // OVERRIDES
 
@@ -151,6 +154,13 @@ class Main : SuspendingJavaPlugin() {
             )
         }
 
+        placeholderResolvers["queue_name_bold"] = Function { player ->
+            val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
+            return@Function Formatter.legacy().serialize(
+                miniMessage.deserialize(queue.formattedName).color(TextColor.fromHexString("#DB2B39")).decorate(TextDecoration.BOLD)
+            )
+        }
+
         placeholderResolvers["queue_size"] = Function { player ->
             val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
             return@Function miniMessage.serialize(
@@ -177,6 +187,23 @@ class Main : SuspendingJavaPlugin() {
 
         placeholderResolvers["in_queue"] = Function { player ->
             return@Function ((QueueManager getQueueOf player) != null).toString()
+        }
+
+        placeholderResolvers["queue_total_games"] = Function { player ->
+            val queue = (QueueManager getQueueOf player) ?: return@Function "n/a"
+            try {
+                val wins = PlaceholderAPI.setPlaceholders(player, "%data_${queue.id}_wins%").toInt()
+                val losses = PlaceholderAPI.setPlaceholders(player, "%data_${queue.id}_losses%").toInt()
+                return@Function (wins + losses).toString()
+            } catch (error: NumberFormatException) {
+                return@Function "0"
+            }
+        }
+
+        placeholderResolvers["queue_rating"] = Function { player ->
+            val queue = (QueueManager getQueueOf player) ?: return@Function "n/a"
+            val rating = PlaceholderAPI.setPlaceholders(player, "%data_${queue.id}_rating%")
+            if (rating == "%data_${queue.id}_rating%") return@Function "0" else rating
         }
     }
 

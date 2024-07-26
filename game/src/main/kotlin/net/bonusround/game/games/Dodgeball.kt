@@ -44,9 +44,11 @@ private val dodgeball = ItemBuilder(Material.BOW)
     .unbreakable(false, hide = true)
     .droppable(false)
     .flags(ItemFlag.HIDE_ENCHANTS)
+
 private val dodgeballCharge = ItemBuilder(Material.ARROW)
     .displayName(Component.text(""))
     .droppable(false)
+
 private val dashItem = ItemBuilder(Material.STICK)
     .displayName(
         lang().games.dodgeball.dodgeballDashItemName.component(usePrefix = false)
@@ -54,6 +56,7 @@ private val dashItem = ItemBuilder(Material.STICK)
     .unbreakable(true)
     .droppable(false)
     .customModelData(102)
+
 private val doubleJumpItem = ItemBuilder(Material.STRING)
     .displayName(
         lang().games.dodgeball.dodgeballDoubleJumpItemName.component(usePrefix = false)
@@ -148,7 +151,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     }
 
                     hasEnded = true
-                    // game.broadcast(lang().games.general.gameOverTitle) // TODO Reimplement formatter titles
+                    game.broadcast(lang().games.general.gameOverTitle.toTitle())
 
                     delayed(5000) {
                         game.release(cancelJob = true)

@@ -76,8 +76,7 @@ class Queue(
             }
             async {
                 game.job = sync {
-                    // game.broadcast(lang().games.general.matchFoundTitle)
-                    // TODO Reimplement titles with formatter
+                    game.broadcast(BonusRoundAPI.Lang.matchFoundTitle)
                     startGame.accept(game)
                 }
             }

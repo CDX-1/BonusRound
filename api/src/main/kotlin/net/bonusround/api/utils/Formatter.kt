@@ -231,3 +231,17 @@ fun Component.sendList(vararg players: Player) {
 fun Component.sendAll() {
     this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
 }
+
+infix fun Title.send(player: Player) {
+    player.showTitle(this)
+}
+
+fun Title.sendList(vararg players: Player) {
+    players.forEach { player ->
+        player.showTitle(this)
+    }
+}
+
+fun Title.sendAll() {
+    this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
+}
