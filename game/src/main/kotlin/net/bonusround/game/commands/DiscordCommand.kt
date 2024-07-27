@@ -11,7 +11,6 @@ class DiscordCommand : Command(
     name = "discord",
     shortDescription = "Interact with our Discord server",
     fullDescription = "Get a link to our Discord server or manage your account syncing",
-    subcommands = mutableListOf(),
     permission = "commands.default.discord",
     aliases = arrayOf("d", "dis")
 ) {

@@ -10,10 +10,12 @@ import net.bonusround.api.BonusRoundAPI
 import net.bonusround.api.config.ConfigLoader
 import net.bonusround.api.data.DataManager
 import net.bonusround.api.game.QueueManager
+import net.bonusround.api.gui.GuiService
 import net.bonusround.api.utils.Formatter
 import net.bonusround.game.commands.DiscordCommand
 import net.bonusround.game.commands.HelpCommand
 import net.bonusround.game.commands.QueueCommand
+import net.bonusround.game.commands.StatsCommand
 import net.bonusround.game.configs.Config
 import net.bonusround.game.configs.Lang
 import net.bonusround.game.configs.Overrides
@@ -29,6 +31,7 @@ import net.bonusround.game.extensions.dataProvider
 import net.bonusround.game.games.Dodgeball
 import net.bonusround.game.generic.AppearanceEvents
 import net.bonusround.game.generic.ItemEvents
+import net.bonusround.game.gui.StatsGui
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -110,6 +113,10 @@ class Main : SuspendingJavaPlugin() {
 
         Dodgeball().register()
 
+        // GUIs
+
+        GuiService.registerGui(StatsGui())
+
         // COMMANDS
 
         CommandAPI.onLoad(CommandAPIBukkitConfig(this))
@@ -118,6 +125,7 @@ class Main : SuspendingJavaPlugin() {
         QueueCommand().register()
         DiscordCommand().register()
         HelpCommand().register()
+        StatsCommand().register()
 
         // PLACEHOLDER API
 
