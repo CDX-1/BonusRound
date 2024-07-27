@@ -35,12 +35,10 @@ class DiscordChat : ListenerAdapter() {
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.channel.id != conf().discordChatChannel) return
         if (event.author.isBot) return
-        Bukkit.getServer().onlinePlayers.forEach { _ ->
-            lang().general.discordMinecraftFormat.component(
-                usePrefix = false,
-                values = arrayOf(event.author.name, event.message.contentStripped)
-            ).sendAll()
-        }
+        lang().general.discordMinecraftFormat.component(
+            usePrefix = false,
+            values = arrayOf(event.author.name, event.message.contentStripped)
+        ).sendAll()
     }
 
     init {
