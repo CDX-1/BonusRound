@@ -19,24 +19,13 @@ class PlayerDataProvider private constructor(private val player: Player) {
         }
     }
 
-    private var playerDataContainer: PlayerDataContainer? = null
-    private var dodgeballRatingContainers: ConcurrentHashMap<Dodgeball.Format, DodgeballRatingContainer>? = null
-
     val playerData: PlayerDataContainer?
         get() {
-            if (playerDataContainer == null) {
-                playerDataContainer =
-                    DataContainerService.getContainers(PlayerDataContainer::class, Int::class, UUID::class)?.get(player.uniqueId)
-            }
-            return playerDataContainer
+            return DataContainerService.getContainers(PlayerDataContainer::class, Int::class, UUID::class)?.get(player.uniqueId)
         }
 
     val dodgeballRatings: ConcurrentHashMap<Dodgeball.Format, DodgeballRatingContainer>?
         get() {
-            if (dodgeballRatingContainers == null) {
-                dodgeballRatingContainers =
-                    DataContainerService.getContainersMap(DodgeballRatingContainer::class, Int::class, UUID::class, Dodgeball.Format::class)?.get(player.uniqueId)
-            }
-            return dodgeballRatingContainers
+            return DataContainerService.getContainersMap(DodgeballRatingContainer::class, Int::class, UUID::class, Dodgeball.Format::class)?.get(player.uniqueId)
         }
 }

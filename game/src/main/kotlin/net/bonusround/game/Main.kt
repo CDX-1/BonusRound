@@ -12,10 +12,7 @@ import net.bonusround.api.data.DataManager
 import net.bonusround.api.game.QueueManager
 import net.bonusround.api.gui.GuiService
 import net.bonusround.api.utils.Formatter
-import net.bonusround.game.commands.DiscordCommand
-import net.bonusround.game.commands.HelpCommand
-import net.bonusround.game.commands.QueueCommand
-import net.bonusround.game.commands.StatsCommand
+import net.bonusround.game.commands.*
 import net.bonusround.game.configs.Config
 import net.bonusround.game.configs.Lang
 import net.bonusround.game.configs.Overrides
@@ -128,12 +125,14 @@ class Main : SuspendingJavaPlugin() {
         DiscordCommand().register()
         HelpCommand().register()
         StatsCommand().register()
+        RefreshLeaderboardCommand().register()
 
         // PLACEHOLDER API
 
         registerPlaceholders()
         PAPIExtension().register()
-        DataPAPI().register()
+        PAPIData().register()
+        PAPILeaderboard().register()
 
         // OVERRIDES
 

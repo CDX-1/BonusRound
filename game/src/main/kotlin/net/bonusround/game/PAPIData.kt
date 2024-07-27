@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-class DataPAPI : PlaceholderExpansion() {
+class PAPIData : PlaceholderExpansion() {
     override fun getIdentifier(): String {
         return "data"
     }
@@ -42,20 +42,20 @@ class DataPAPI : PlaceholderExpansion() {
                 } ?: "null"
             }
             "dodgeball" -> {
-                if (args.size <= 2) return "null-a"
+                if (args.size <= 2) return "null"
                 player.dataProvider.dodgeballRatings?.let { ratings ->
                     try {
                         ratings[Dodgeball.Format.valueOf(args[1])]?.let { rating ->
                             val value = DodgeballRatingContainer::class.memberProperties.find { prop -> prop.name == args[2] }
                             value?.isAccessible = true
-                            value?.get(rating)?.toString() ?: "null-b"
+                            value?.get(rating)?.toString() ?: "null"
                         }
                     } catch (error: IllegalArgumentException) {
-                        "null-j"
+                        "null"
                     }
-                } ?: "null-c"
+                } ?: "null"
             }
-            else -> "null-d"
+            else -> "null"
         }
     }
 }
