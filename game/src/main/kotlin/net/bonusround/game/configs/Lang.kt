@@ -58,6 +58,15 @@ class Lang {
 
         }
 
+        var refreshLeaderboard = RefreshLeaderboard()
+
+        @ConfigSerializable
+        class RefreshLeaderboard {
+
+            var refreshed: String = "Successfully refresh leaderboards"
+
+        }
+
     }
 
     var games = Games()
@@ -70,13 +79,19 @@ class Lang {
         @ConfigSerializable
         class General {
 
-            var matchFoundTitle: Title = Title.of("<color:#DB2B39><bold>ᴍᴀᴛᴄʜ ғᴏᴜɴᴅ", "<gray>Loading game...")
-            var gameOverTitle: Title = Title.of("<color:#DB2B39><bold>ɢᴀᴍᴇ ᴏᴠᴇʀ", "<gray>")
+            var matchFoundTitle: Title = Title.of("<color:#DB2B39><bold>MATCH FOUND", "<gray>Loading game...")
+            var gameOverTitle: Title = Title.of("<color:#DB2B39><bold>GG", "<gray>")
             var searchingForArena: String = "Searching for arena..."
             var arenaFound: String = "Found arena: <color:#DB2B39>%0"
             var arenaSearchTimeout: String =
                 "You've been removed from the arena queue because your search took longer than %0 minutes"
             var gameTimeout: String = "Your game has been timed out!"
+
+            var ratingGain: Title = Title.of("<color:#DB2B39><bold>RATING", "<gray>Your <color:#DB2B39>%0<gray> rating went up by <color:#DB2B39>%1")
+            var ratingLoss: Title = Title.of("<color:#DB2B39><bold>RATING", "<gray>Your <color:#DB2B39>%0<gray> rating went down by <color:#DB2B39>%1")
+            var ratingUnchanged: Title = Title.of("<color:#DB2B39><bold>RATING", "<gray>Your <color:#DB2B39>%0<gray> is unchanged")
+            var rankUp: Title = Title.of("<color:#DB2B39><bold>RANK", "<gray>You've successfully achieved rank <color:#DB2B39>%0 <gray>in <color:#DB2B39>%1")
+            var rankDown: Title = Title.of("<color:#DB2B39><bold>RANK", "<gray>You've fell to rank <color:#DB2B39>%0 <gray>in <color:#DB2B39>%1")
 
         }
 
