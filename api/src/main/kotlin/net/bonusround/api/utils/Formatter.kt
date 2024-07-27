@@ -3,6 +3,7 @@
 package net.bonusround.api.utils
 
 import me.clip.placeholderapi.PlaceholderAPI
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -192,13 +193,13 @@ fun Component.toPlain(): String {
     return plainSerializer.serialize(this)
 }
 
-infix fun String.send(player: Player) {
-    player.sendMessage(this)
+infix fun String.send(audience: Audience) {
+    audience.sendMessage(plainSerializer.deserialize(this))
 }
 
-fun String.sendList(vararg players: Player) {
-    players.forEach { player ->
-        player.sendMessage(this)
+fun String.sendList(vararg audiences: Audience) {
+    audiences.forEach { audience ->
+        audience.sendMessage(plainSerializer.deserialize(this))
     }
 }
 
@@ -206,25 +207,25 @@ fun String.sendAll() {
     this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
 }
 
-infix fun String.sendComponent(player: Player) {
-    this.component().send(player)
+infix fun String.sendComponent(audience: Audience) {
+    this.component().send(audience)
 }
 
-fun String.sendComponentList(vararg players: Player) {
-    this.component().sendList(*players)
+fun String.sendComponentList(vararg audiences: Audience) {
+    this.component().sendList(*audiences)
 }
 
 fun String.sendComponentAll() {
     this.component().sendAll()
 }
 
-infix fun Component.send(player: Player) {
-    player.sendMessage(this)
+infix fun Component.send(audience: Audience) {
+    audience.sendMessage(this)
 }
 
-fun Component.sendList(vararg players: Player) {
-    players.forEach { player ->
-        player.sendMessage(this)
+fun Component.sendList(vararg audiences: Audience) {
+    audiences.forEach { audience ->
+        audience.sendMessage(this)
     }
 }
 
@@ -232,13 +233,13 @@ fun Component.sendAll() {
     this.sendList(*Bukkit.getServer().onlinePlayers.toTypedArray())
 }
 
-infix fun Title.send(player: Player) {
-    player.showTitle(this)
+infix fun Title.send(audience: Audience) {
+    audience.showTitle(this)
 }
 
-fun Title.sendList(vararg players: Player) {
-    players.forEach { player ->
-        player.showTitle(this)
+fun Title.sendList(vararg audiences: Audience) {
+    audiences.forEach { audience ->
+        audience.showTitle(this)
     }
 }
 
