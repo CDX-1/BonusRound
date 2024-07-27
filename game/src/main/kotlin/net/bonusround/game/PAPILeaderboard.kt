@@ -10,7 +10,7 @@ import net.bonusround.game.data.tables.DodgeballRatingTable
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.jetbrains.exposed.sql.SortOrder
-import java.util.UUID
+import java.util.*
 
 class PAPILeaderboard : PlaceholderExpansion() {
     companion object {
@@ -102,6 +102,7 @@ class PAPILeaderboard : PlaceholderExpansion() {
             "next" -> {
                 return millis().toMinutes(lastUpdate + minutes().toMillis(5) - System.currentTimeMillis()).toString()
             }
+
             else -> "null"
         }
     }

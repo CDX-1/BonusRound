@@ -17,7 +17,9 @@ class StatsGui : DynamicGui("stats") {
             .pane(GuiConstants.WHITESPACE_BACKGROUND_3_ROW)
             .pane(
                 ItemBuilder(Material.PLAYER_HEAD)
-                    .displayName("<red><b>Dodgeball".component(usePrefix = false).decoration(TextDecoration.ITALIC, false))
+                    .displayName(
+                        "<red><b>Dodgeball".component(usePrefix = false).decoration(TextDecoration.ITALIC, false)
+                    )
                     .flags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
                     .toStaticPane(4, 1, 1, 1, 0, 0)
             )

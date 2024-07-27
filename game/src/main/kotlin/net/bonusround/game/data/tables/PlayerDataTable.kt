@@ -16,7 +16,7 @@ object PlayerDataTable : IntIdTable(createTableName("player_data")), PlayerTable
     override fun onJoin(player: Player) {
         launch {
             val playerData = asyncTransaction {
-                val entity = PlayerDataEntity.find( uuid eq player.uniqueId ).firstOrNull()
+                val entity = PlayerDataEntity.find(uuid eq player.uniqueId).firstOrNull()
                 return@asyncTransaction PlayerDataContainer(
                     player.uniqueId,
                     bits = entity?.bits ?: 0,

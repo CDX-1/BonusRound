@@ -19,7 +19,15 @@ class Title {
     var header: String = ""
     var subtext: String = ""
 
-    fun toTitle(usePrefix: Boolean = false, usePAPI: Boolean = false, papiPlayer: Player? = null, vararg values: String): net.kyori.adventure.title.Title {
-        return net.kyori.adventure.title.Title.title(header.component(usePrefix, usePAPI, papiPlayer, values = values), subtext.component(usePrefix, usePAPI, papiPlayer, values = values))
+    fun toTitle(
+        usePrefix: Boolean = false,
+        usePAPI: Boolean = false,
+        papiPlayer: Player? = null,
+        vararg values: String,
+    ): net.kyori.adventure.title.Title {
+        return net.kyori.adventure.title.Title.title(
+            header.component(usePrefix, usePAPI, papiPlayer, values = values),
+            subtext.component(usePrefix, usePAPI, papiPlayer, values = values)
+        )
     }
 }

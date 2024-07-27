@@ -7,7 +7,6 @@ import net.bonusround.game.games.Dodgeball
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.HashMap
 
 private val playerDataProviders = HashMap<UUID, PlayerDataProvider>()
 
@@ -21,11 +20,17 @@ class PlayerDataProvider private constructor(private val player: Player) {
 
     val playerData: PlayerDataContainer?
         get() {
-            return DataContainerService.getContainers(PlayerDataContainer::class, Int::class, UUID::class)?.get(player.uniqueId)
+            return DataContainerService.getContainers(PlayerDataContainer::class, Int::class, UUID::class)
+                ?.get(player.uniqueId)
         }
 
     val dodgeballRatings: ConcurrentHashMap<Dodgeball.Format, DodgeballRatingContainer>?
         get() {
-            return DataContainerService.getContainersMap(DodgeballRatingContainer::class, Int::class, UUID::class, Dodgeball.Format::class)?.get(player.uniqueId)
+            return DataContainerService.getContainersMap(
+                DodgeballRatingContainer::class,
+                Int::class,
+                UUID::class,
+                Dodgeball.Format::class
+            )?.get(player.uniqueId)
         }
 }

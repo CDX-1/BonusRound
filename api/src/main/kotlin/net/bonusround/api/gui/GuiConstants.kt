@@ -25,10 +25,12 @@ object GuiConstants {
             WHITESPACE_BACKGROUND_5_ROW,
             WHITESPACE_BACKGROUND_6_ROW
         ).forEach {
-            it.addItem(ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
-                .displayName(Component.text(""))
-                .flags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
-                .toGuiItem())
+            it.addItem(
+                ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                    .displayName(Component.text(""))
+                    .flags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
+                    .toGuiItem()
+            )
             it.setRepeat(true)
         }
     }

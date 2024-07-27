@@ -10,7 +10,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.function.Consumer
-import kotlin.collections.HashMap
 
 class Game(val players: ArrayList<Player>) {
 

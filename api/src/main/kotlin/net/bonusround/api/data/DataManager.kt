@@ -30,10 +30,13 @@ class DataManager(
     fun register() {
         if (databaseType.lowercase() == "sqlite") {
             val path = File(BonusRoundAPI.main.dataFolder, "${sqliteFileName}.db")
-            database = Database.connect("jdbc:sqlite:${path}?busy_timeout=30000", "org.sqlite.JDBC", databaseConfig = DatabaseConfig {
-                defaultMaxAttempts = 30
-                defaultMinRetryDelay = 50
-            })
+            database = Database.connect(
+                "jdbc:sqlite:${path}?busy_timeout=30000",
+                "org.sqlite.JDBC",
+                databaseConfig = DatabaseConfig {
+                    defaultMaxAttempts = 30
+                    defaultMinRetryDelay = 50
+                })
         } else if (databaseType.lowercase() == "mysql") {
             database = Database.connect(
                 "jdbc:mysql://${host}",

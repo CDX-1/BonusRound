@@ -8,7 +8,6 @@ import net.bonusround.api.utils.launch
 import net.bonusround.game.Main
 import net.bonusround.game.data.containers.DodgeballRatingContainer
 import net.bonusround.game.data.entities.DodgeballRatingEntity
-import net.bonusround.game.extensions.dataProvider
 import net.bonusround.game.games.Dodgeball
 import org.bukkit.entity.Player
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -23,7 +22,9 @@ object DodgeballRatingTable : IntIdTable(createTableName("dodgeball_rating")), P
 
             Dodgeball.Format.entries.forEach { format ->
                 asyncTransaction {
-                    val entity = DodgeballRatingEntity.find { uuid eq player.uniqueId and (DodgeballRatingTable.format eq format.name.lowercase()) }.firstOrNull()
+                    val entity =
+                        DodgeballRatingEntity.find { uuid eq player.uniqueId and (DodgeballRatingTable.format eq format.name.lowercase()) }
+                            .firstOrNull()
                     ratings[format] = DodgeballRatingContainer(
                         player.uniqueId,
                         format = format.name.lowercase(),
@@ -35,7 +36,12 @@ object DodgeballRatingTable : IntIdTable(createTableName("dodgeball_rating")), P
                 }
             }
 
-            DataContainerService.getContainersMap(DodgeballRatingContainer::class, Int::class, UUID::class, Dodgeball.Format::class)!![player.uniqueId] = ratings
+            DataContainerService.getContainersMap(
+                DodgeballRatingContainer::class,
+                Int::class,
+                UUID::class,
+                Dodgeball.Format::class
+            )!![player.uniqueId] = ratings
             Main.logger.info("Applied ratings for player ${player.name} in mem")
         }
     }
@@ -50,7 +56,9 @@ object DodgeballRatingTable : IntIdTable(createTableName("dodgeball_rating")), P
             map.forEach { (f, data) ->
                 launch {
                     asyncTransaction {
-                        val entity = DodgeballRatingEntity.find { uuid eq player.uniqueId and (format eq f.name.lowercase()) }.firstOrNull()
+                        val entity =
+                            DodgeballRatingEntity.find { uuid eq player.uniqueId and (format eq f.name.lowercase()) }
+                                .firstOrNull()
                         entity?.let {
                             it.wins = data.wins
                             it.losses = data.losses

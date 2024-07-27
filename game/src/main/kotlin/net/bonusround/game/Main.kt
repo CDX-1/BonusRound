@@ -166,7 +166,8 @@ class Main : SuspendingJavaPlugin() {
         placeholderResolvers["queue_name_bold"] = Function { player ->
             val queue = (QueueManager getQueueOf player) ?: return@Function "/queue"
             return@Function Formatter.legacy().serialize(
-                miniMessage.deserialize(queue.formattedName).color(TextColor.fromHexString("#DB2B39")).decorate(TextDecoration.BOLD)
+                miniMessage.deserialize(queue.formattedName).color(TextColor.fromHexString("#DB2B39"))
+                    .decorate(TextDecoration.BOLD)
             )
         }
 

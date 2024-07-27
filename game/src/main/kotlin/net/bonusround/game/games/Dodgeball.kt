@@ -1,6 +1,5 @@
 package net.bonusround.game.games
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.github.shynixn.mccoroutine.bukkit.launch
 import de.tr7zw.changeme.nbtapi.NBT
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -131,14 +130,30 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                     }
                     delayedAsync(5000) {
                         if (attacker.isOnline) {
-                            lang().games.general.ratingGain.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1", "3")) send attacker
-                            attacker.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1f, 1f))
+                            lang().games.general.ratingGain.toTitle(
+                                usePrefix = false,
+                                values = arrayOf("Dodgeball 1v1", "3")
+                            ) send attacker
+                            attacker.playSound(
+                                Sound.sound(
+                                    Key.key("entity.player.levelup"),
+                                    Sound.Source.MASTER,
+                                    1f,
+                                    1f
+                                )
+                            )
                         }
                         if (hit.isOnline) {
                             if (oldHitRating - 3 < 0) {
-                                lang().games.general.ratingUnchanged.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1")) send hit
+                                lang().games.general.ratingUnchanged.toTitle(
+                                    usePrefix = false,
+                                    values = arrayOf("Dodgeball 1v1")
+                                ) send hit
                             } else {
-                                lang().games.general.ratingLoss.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1", "3")) send hit
+                                lang().games.general.ratingLoss.toTitle(
+                                    usePrefix = false,
+                                    values = arrayOf("Dodgeball 1v1", "3")
+                                ) send hit
                             }
                             hit.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
                         }
@@ -150,7 +165,14 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                             delay(seconds().toMillis(1))
                             repeat(40) {
                                 delay(75)
-                                cloneLoc.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 10f, 1f), cloneLoc.x, cloneLoc.y, cloneLoc.z)
+                                cloneLoc.world.playSound(
+                                    Sound.sound(
+                                        Key.key("entity.generic.explode"),
+                                        Sound.Source.MASTER,
+                                        10f,
+                                        1f
+                                    ), cloneLoc.x, cloneLoc.y, cloneLoc.z
+                                )
                                 cloneLoc.world.spawnParticle(Particle.EXPLOSION, cloneLoc, 1, 4.0, 2.0, 4.0)
                             }
                         }
@@ -229,7 +251,7 @@ private val dodgeball1v1 = Consumer<Game> { game ->
             val red = game.players[0]
             val blue = game.players[1]
 
-            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180f,0f))
+            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180f, 0f))
             blue.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z - 16))
 
             game.players.forEach { player ->

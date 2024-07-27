@@ -41,12 +41,14 @@ class PAPIData : PlaceholderExpansion() {
                     value?.get(data)?.toString() ?: "null"
                 } ?: "null"
             }
+
             "dodgeball" -> {
                 if (args.size <= 2) return "null"
                 player.dataProvider.dodgeballRatings?.let { ratings ->
                     try {
                         ratings[Dodgeball.Format.valueOf(args[1])]?.let { rating ->
-                            val value = DodgeballRatingContainer::class.memberProperties.find { prop -> prop.name == args[2] }
+                            val value =
+                                DodgeballRatingContainer::class.memberProperties.find { prop -> prop.name == args[2] }
                             value?.isAccessible = true
                             value?.get(rating)?.toString() ?: "null"
                         }
@@ -55,6 +57,7 @@ class PAPIData : PlaceholderExpansion() {
                     }
                 } ?: "null"
             }
+
             else -> "null"
         }
     }
