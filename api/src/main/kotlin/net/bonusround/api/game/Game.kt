@@ -10,22 +10,23 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.HashMap
 
 class Game(val players: ArrayList<Player>) {
 
     lateinit var job: Job
     private val onEventHandlers = ArrayList<Consumer<GameEvent>>()
     private val abilities = HashMap<PlayerAbility, Consumer<Player>>()
-    private val abilityCooldowns = HashMap<UUID, Long>()
+    private val abilityCooldowns = HashMap<UUID, HashMap<String, Long>>()
 
     fun registerPlayerAbility(ability: PlayerAbility, handler: Consumer<Player>) {
         abilities[ability] = handler
     }
 
     fun callAbility(ability: PlayerAbility, player: Player) {
-        val last = abilityCooldowns[player.uniqueId] ?: 0
+        val last = abilityCooldowns[player.uniqueId]?.get(ability.id) ?: 0
         if (System.currentTimeMillis() - last < ability.cooldown) return
-        abilityCooldowns[player.uniqueId] = System.currentTimeMillis()
+        abilityCooldowns.getOrPut(player.uniqueId) { HashMap() }[ability.id] = System.currentTimeMillis()
         abilities[ability]?.accept(player)
     }
 

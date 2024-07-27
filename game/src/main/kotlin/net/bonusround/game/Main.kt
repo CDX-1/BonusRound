@@ -87,6 +87,8 @@ class Main : SuspendingJavaPlugin() {
 
         Formatter.prefix = lang().general.prefix
 
+        BonusRoundAPI.Lang.matchFoundTitle = lang.games.general.matchFoundTitle.toTitle(usePrefix = false)
+
         // DATABASE
 
         DataManager(

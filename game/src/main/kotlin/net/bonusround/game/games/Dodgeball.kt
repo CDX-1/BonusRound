@@ -16,6 +16,8 @@ import net.bonusround.game.configs.lang
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
+import net.minecraft.sounds.SoundSource
+import net.minecraft.world.level.block.SoundType
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.ArmorStand
@@ -65,11 +67,10 @@ private val doubleJumpItem = ItemBuilder(Material.STRING)
     .droppable(false)
     .customModelData(101)
 private val dashAbility = PlayerAbility("dash", seconds().toMillis(5))
-private val doubleJumpAbility = PlayerAbility("dash", seconds().toMillis(2))
+private val doubleJumpAbility = PlayerAbility("doubleJump", seconds().toMillis(2))
 
 private val dodgeball1v1 = Consumer<Game> { game ->
     suspendingAsync {
-
         val arenaSearch = CompletableDeferred<Arena?>()
         var arena: Arena? = null
         var hasEnded = false
@@ -115,8 +116,8 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                         lang().games.dodgeball.victimHit.component(values = arrayOf(attacker.name))
                     )
 
+                    cloneLoc.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f), cloneLoc.x, cloneLoc.y, cloneLoc.z)
                     game.players.forEach { player ->
-                        player.playSound(Sound.sound(Key.key("entity.ender_dragon.growl"), Sound.Source.MASTER, 1f, 1f))
                         createBlockWave(hit.location, 4)
                         launch {
                             delay(seconds().toMillis(1))
@@ -205,23 +206,29 @@ private val dodgeball1v1 = Consumer<Game> { game ->
         )
 
         sync {
-
             val red = game.players[0]
             val blue = game.players[1]
 
-            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180F, 90F))
+            red.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z + 16, 180f,0f))
             blue.teleport(Location(arena.origin.world, arena.origin.x, arena.origin.y, arena.origin.z - 16))
 
             game.players.forEach { player ->
                 player.gameMode = GameMode.ADVENTURE
                 player.inventory.clear()
-                player.allowFlight = true
                 dodgeball.give(player)
                 dodgeballCharge.atSlot(9, player)
                 dashItem.atSlot(8, player)
                 doubleJumpItem.atSlot(7, player)
-                async {
-                    countdowns.add(experienceBarCountdown(player, 90))
+                countdowns.add(experienceBarCountdown(player, 90))
+            }
+
+            delayedAsync(500) {
+                game.players.forEach { player ->
+                    if (inGame.containsKey(player)) {
+                        sync {
+                            player.allowFlight = true
+                        }
+                    }
                 }
             }
 
@@ -233,7 +240,6 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                 game.broadcast(lang().games.general.gameTimeout.component())
                 game.callEvent(GameEvent("end"))
             }
-
         }
     }
 }
