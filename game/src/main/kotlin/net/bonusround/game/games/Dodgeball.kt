@@ -1,5 +1,6 @@
 package net.bonusround.game.games
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import com.github.shynixn.mccoroutine.bukkit.launch
 import de.tr7zw.changeme.nbtapi.NBT
 import io.papermc.paper.event.entity.EntityMoveEvent
@@ -13,11 +14,11 @@ import net.bonusround.api.utils.*
 import net.bonusround.api.utils.EventListener
 import net.bonusround.game.Main
 import net.bonusround.game.configs.lang
+import net.bonusround.game.extensions.dataProvider
+import net.bonusround.game.extensions.safeSub
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
-import net.minecraft.sounds.SoundSource
-import net.minecraft.world.level.block.SoundType
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.ArmorStand
@@ -38,6 +39,7 @@ import kotlin.math.sin
 
 private lateinit var dodgeballArenaProvider: ArenaProvider
 private val inGame = HashMap<Player, Game>()
+
 private val dodgeball = ItemBuilder(Material.BOW)
     .displayName(
         lang().games.dodgeball.dodgeballItemName.component(usePrefix = false)
@@ -66,6 +68,7 @@ private val doubleJumpItem = ItemBuilder(Material.STRING)
     .unbreakable(true)
     .droppable(false)
     .customModelData(101)
+
 private val dashAbility = PlayerAbility("dash", seconds().toMillis(5))
 private val doubleJumpAbility = PlayerAbility("doubleJump", seconds().toMillis(2))
 
@@ -116,22 +119,39 @@ private val dodgeball1v1 = Consumer<Game> { game ->
                         lang().games.dodgeball.victimHit.component(values = arrayOf(attacker.name))
                     )
 
-                    cloneLoc.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f), cloneLoc.x, cloneLoc.y, cloneLoc.z)
+                    attacker.dataProvider.dodgeballRatings?.get(Dodgeball.Format.`1v1`)?.let { _ ->
+                        attacker.dataProvider.dodgeballRatings!![Dodgeball.Format.`1v1`]!!.wins += 1
+                        attacker.dataProvider.dodgeballRatings!![Dodgeball.Format.`1v1`]!!.rating += 3
+                    }
+                    var oldHitRating = 0
+                    hit.dataProvider.dodgeballRatings?.get(Dodgeball.Format.`1v1`)?.let { _ ->
+                        hit.dataProvider.dodgeballRatings!![Dodgeball.Format.`1v1`]!!.losses += 1
+                        oldHitRating = hit.dataProvider.dodgeballRatings!![Dodgeball.Format.`1v1`]!!.rating
+                        hit.dataProvider.dodgeballRatings!![Dodgeball.Format.`1v1`]!!.rating = oldHitRating safeSub 3
+                    }
+                    delayedAsync(5000) {
+                        if (attacker.isOnline) {
+                            lang().games.general.ratingGain.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1", "3")) send attacker
+                            attacker.playSound(Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 1f, 1f))
+                        }
+                        if (hit.isOnline) {
+                            if (oldHitRating - 3 < 0) {
+                                lang().games.general.ratingUnchanged.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1")) send hit
+                            } else {
+                                lang().games.general.ratingLoss.toTitle(usePrefix = false, values = arrayOf("Dodgeball 1v1", "3")) send hit
+                            }
+                            hit.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 1f, 1f))
+                        }
+                    }
+
                     game.players.forEach { player ->
                         createBlockWave(hit.location, 4)
                         launch {
                             delay(seconds().toMillis(1))
                             repeat(40) {
-                                delay(100)
-                                player.playSound(
-                                    Sound.sound(
-                                        Key.key("entity.generic.explode"),
-                                        Sound.Source.MASTER,
-                                        1f,
-                                        1f
-                                    )
-                                )
-                                cloneLoc.world.spawnParticle(Particle.EXPLOSION, cloneLoc, 1, 0.0, 0.0, 0.0)
+                                delay(75)
+                                cloneLoc.world.playSound(Sound.sound(Key.key("entity.generic.explode"), Sound.Source.MASTER, 10f, 1f), cloneLoc.x, cloneLoc.y, cloneLoc.z)
+                                cloneLoc.world.spawnParticle(Particle.EXPLOSION, cloneLoc, 1, 4.0, 2.0, 4.0)
                             }
                         }
                     }
