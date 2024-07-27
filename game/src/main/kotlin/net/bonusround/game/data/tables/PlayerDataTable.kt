@@ -60,6 +60,11 @@ object PlayerDataTable : IntIdTable(createTableName("player_data")), PlayerTable
                 }
             }
         }
+        DataContainerService.getContainers(
+            PlayerDataContainer::class,
+            Int::class,
+            UUID::class
+        )!!.remove(player.uniqueId)
     }
 
     val uuid = uuid("uuid")

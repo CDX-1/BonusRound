@@ -5,8 +5,10 @@ import net.bonusround.api.data.PlayerTable
 import net.bonusround.api.data.createTableName
 import net.bonusround.api.utils.asyncTransaction
 import net.bonusround.api.utils.launch
+import net.bonusround.game.Main
 import net.bonusround.game.data.containers.DodgeballRatingContainer
 import net.bonusround.game.data.entities.DodgeballRatingEntity
+import net.bonusround.game.extensions.dataProvider
 import net.bonusround.game.games.Dodgeball
 import org.bukkit.entity.Player
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -29,10 +31,12 @@ object DodgeballRatingTable : IntIdTable(createTableName("dodgeball_rating")), P
                         losses = entity?.losses ?: 0,
                         rating = entity?.rating ?: 0
                     )
+                    Main.logger.info("Entity for ${player.name} null status: ${entity == null}")
                 }
             }
 
             DataContainerService.getContainersMap(DodgeballRatingContainer::class, Int::class, UUID::class, Dodgeball.Format::class)!![player.uniqueId] = ratings
+            Main.logger.info("Applied ratings for player ${player.name} in mem")
         }
     }
 
@@ -63,6 +67,12 @@ object DodgeballRatingTable : IntIdTable(createTableName("dodgeball_rating")), P
                     }
                 }
             }
+            DataContainerService.getContainersMap(
+                DodgeballRatingContainer::class,
+                Int::class,
+                UUID::class,
+                Dodgeball.Format::class
+            )!!.remove(player.uniqueId)
         }
     }
 
