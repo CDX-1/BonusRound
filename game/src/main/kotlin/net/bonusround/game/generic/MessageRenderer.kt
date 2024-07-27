@@ -21,7 +21,10 @@ class MessageRenderer : ChatRenderer {
             usePrefix = false,
             usePAPI = true,
             papiPlayer = source,
-            values = arrayOf(convertHex(PlaceholderAPI.setPlaceholders(source, "%luckperms_prefix%")))
+            values = arrayOf(
+                convertHex(PlaceholderAPI.setPlaceholders(source, "%luckperms_prefix%")),
+                source.name
+            )
         ).append(message.color(TextColor.color(170, 170, 170)))
     }
 

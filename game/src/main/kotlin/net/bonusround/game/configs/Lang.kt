@@ -24,7 +24,7 @@ class Lang {
         var unknownCommand: String =
             "That command doesn't seem to exist! Try <color:#DB2B39><click:run_command:/help>/help!"
         var undroppableItem: String = "You cannot drop this item!"
-        var chatFormat: String = "%0%player_name% <reset><dark_gray>»<reset> <gray>"
+        var chatFormat: String = "%0%1 <reset><dark_gray>»<reset> <gray>"
         var discordMinecraftFormat: String = "<color:#5865f2><bold>DISCORD<reset> <gray>%0 <dark_gray>» <gray>%1"
 
     }
