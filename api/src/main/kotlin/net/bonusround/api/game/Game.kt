@@ -10,13 +10,14 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.HashMap
 
 class Game(val players: ArrayList<Player>) {
-
     lateinit var job: Job
     private val onEventHandlers = ArrayList<Consumer<GameEvent>>()
     private val abilities = HashMap<PlayerAbility, Consumer<Player>>()
     private val abilityCooldowns = HashMap<UUID, HashMap<String, Long>>()
+    val properties = HashMap<String, Any>()
 
     fun registerPlayerAbility(ability: PlayerAbility, handler: Consumer<Player>) {
         abilities[ability] = handler
